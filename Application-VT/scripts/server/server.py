@@ -20,8 +20,18 @@ def check_message(user_name):
 
 @app.route('/api/v1/<user_name>/write_message/', methods=['POST'])
 def write_message(user_name):
+    print(user_name)
     data = request.json
     print(data)
     return {"ok write message": True}
 
-app.run()
+@app.route('/api/v1/<user_name>/authentication/', methods=['POST'])
+def authentication(user_name):
+    """ Сравнивает логин и пароль пользователя с БД """
+    pass
+
+@app.route('/api/v1/<user_name>/registration/', methods=['POST'])
+def registration(user_name):
+    """ Проверяет есть ли такой Логин и если нет, создаёт password и отправляет его пользователю """
+    pass
+# registration
