@@ -1,0 +1,87 @@
+import pymongo
+import os
+import json
+from bson.objectid import ObjectId
+
+class AuthenticationError(Exception):
+    pass
+
+
+class ConnectDB():
+    def __init__(self):
+        self.info_db = self.get_info_db()
+        self.conn = pymongo.MongoClient(*self.info_db)
+        self.db = self.conn.mydb
+
+    def config_app(self):
+        path = os.getcwd() + "/Application-VT/config.txt"
+        with open(path) as config:
+            json_str = config.read()
+            return json.loads(json_str)
+
+    def get_info_db(self):
+        info_db = self.config_app()['Data_Base']
+        host, port = info_db['host'], info_db['port']
+        return host, int(port)
+
+
+# # --- Использование
+# db = ConnectDB().db
+# coll = db.mycoll
+
+# # --- Найти по _id
+# a = coll.find_one({"_id": ObjectId('5eaf9d2dd28025c76c4d896f')})
+# print(a)
+
+#--- Сохранение данных
+# doc = {"name":"Иван", "surname":"Иванов"}
+# coll.save(doc)
+
+
+
+def creat_BD():
+    db = ConnectDB().db
+    coll_message = db['message']
+    coll_users = db['users']
+
+
+class WrapperDB:
+    def __init__(self, user_name, password):
+        self.user_name = user_name
+        self.__password = password
+        self.authentication = self.is_authentication()
+
+    def is_authentication(self):
+        # DEMO
+        # db = {"_id":"131231211",
+        #         "user_name": "Bob87",
+        #         "password": "qwerty"}
+        # if self.user_name == db['user_name']:
+        #     if self.__password == db['password']:
+        #         return True
+        raise AuthenticationError("Method is_authentication in WrapperDB")
+
+    def is_user(self):
+        if self.user_name in list_users:
+            return True
+        return False
+    
+    def is_message(self):
+        'Если БД скажет что: user_name == "Whom" and status == "not_view"'
+        if self.user_name == "Whom" and status == "not_view":
+            return True
+        return False
+
+    def seve_message(self):
+        """ Сохранение сообщения в (coll message) со статусом = not_view """
+    
+    def save_user(self):
+        """ Сохранение пользователя в БД(проверить что такого ещё нет) """
+    
+    def get_message(self):
+        """ Даёт все сообщения где: (user_name == "Whom" and status == "not_view") """
+
+
+
+
+
