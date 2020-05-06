@@ -4,7 +4,7 @@ from scripts.server.server import app
 
 def main():
     app.run(*conf_server())
-    
+
 def conf_server():
     """ returns tuple(host, server) from the file: config.txt """
 
