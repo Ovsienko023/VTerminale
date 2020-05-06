@@ -8,7 +8,7 @@ import json
 app = Flask(__name__)
 
 
-@app.route('/api/v1/info/<user_name>', methods=['GET'])
+@app.route('/api/v1/info/<user_name>', methods=['POST'])
 def info(user_name):
     # data = request.json
     print(user_name)
@@ -18,8 +18,14 @@ def info(user_name):
 def check_message(user_name):
     print(user_name)
     data = request.json
-    # print(data)
-    return {"ok check message": True}
+    print(data)
+
+    client0 = WrapperDB(user_name, data)
+    status =  client0.check_message()
+    if status:
+        print(status, type(status))
+        return status
+    return {"status": False}
 
 @app.route('/api/v1/<user_name>/write_message/', methods=['POST'])
 def write_message(user_name):

@@ -10,8 +10,14 @@ class Client:
         self.user_password = self.user.password
 
     def check_message(self):
-        user_name = self.user.user_name
+        user_name = self.user_name
         url = f'http://127.0.0.1:5000/api/v1/{user_name}/check_message'
+        data = {"password": self.user_password}
+        status = self.post(url, data)
+        if status:
+            return status
+        else:
+            return status.content
 
     def write_message(self):
         user_name = self.user_name
@@ -21,8 +27,8 @@ class Client:
                 "message":message,
                 "whom": input("Whom: "),
                 "data": time.time()}
-        self.post(url, data)
-
+        status = self.post(url, data)
+        print(status.content)
 
 
     def post(self, url, data):
@@ -85,7 +91,11 @@ class Message:
 def main():
     print("Client run!")
     a = Client()
-    a.write_message()
+    # a.write_message()
+    data = a.check_message()
+    # print(data, type(data))
+    print('New message!')
+    print(f"{data['user_name']}: {data['message']}\ntime: {time.ctime(data['data'])}")
     
 
 main()

@@ -68,7 +68,16 @@ class WrapperDB:
         a = self.coll_message.save(doc)
         print(a)
         
+    def check_message(self):
+        print('check_message')
+        data = self.coll_message.find_one({"whom": self.user_name, "status": "not_view"})
+        print(data)
+        data_message = {"user_name": data['user_name'], "data": data['data'],
+                        "message": data['message']}
+        return data_message
         
+
+# {'_id': ObjectId('5eb28c6e54f72ac038a814c7'), 'user_name': 'bob', 'whom': 'kik', 'data': 1588759662.14039, 'message': 'hi', 'status': 'not_view'}
     
     def save_user(self):
         """ Сохранение пользователя в БД(проверить что такого ещё нет) """
@@ -100,19 +109,22 @@ class WrapperDB:
 # def creat_BD():
 #     db = ConnectDB().db
 #     # coll_message = db['message']
-#     coll_users = db['users']
-#     # doc = {"user_name":"bob", "password":"123"}
+#     coll_users = db.users
+#     coll_message = db.message
+#     # doc = {"user_name":"kik", "password":"123"}
 #     # coll_users.save(doc)
-#     a = coll_users.find_one({"user_name": "bob", "password":"123"})
-#     print(a)
+#     a = coll_message.find()
+    
+#     for i in a:
+#         print(i)
 # creat_BD()
 
 # {'password': '123', 'message': 'hi', 'whom': 'kik', 'data': 1588759662.14039}
 
-# --- Использование
-db = ConnectDB().db
-coll = db.message
+# # --- Использование
+# db = ConnectDB().db
+# coll = db.message
 
-# --- Найти по _id
-a = coll.find_one({"_id": ObjectId('5eb28c6e54f72ac038a814c7')})
-print(a)
+# # --- Найти по _id
+# a = coll.find_one({"_id": ObjectId('5eb28c6e54f72ac038a814c7')})
+# print(a)
