@@ -66,19 +66,33 @@ class WrapperDB:
         doc["message"] = self.data["message"]
         doc["status"] = "not_view"
         a = self.coll_message.save(doc)
-        print(a)
+        # print(a)
         
     def check_message(self):
         print('check_message')
-        data = self.coll_message.find_one({"whom": self.user_name, "status": "not_view"})
-        print(data)
-        data_message = {"user_name": data['user_name'], "data": data['data'],
-                        "message": data['message']}
-        return data_message
-        
+        data = self.coll_message.find({"whom": self.user_name, "status": "not_view"})
+        # print(data)
+        pars_data = self.parsing(data)
+        # print(pars_data)
+        return pars_data
 
-# {'_id': ObjectId('5eb28c6e54f72ac038a814c7'), 'user_name': 'bob', 'whom': 'kik', 'data': 1588759662.14039, 'message': 'hi', 'status': 'not_view'}
-    
+    def parsing(self, data):
+        """ Parsing data in dict(dict()...) """
+        try:
+            new_data = dict()
+            new_data['messages'] = []
+            for mess in data:
+                id = mess['_id']
+                self.update_write_message(id)
+                del mess['_id']
+                new_data['messages'].append(mess)  
+            return new_data
+        except TypeError:
+            return None
+              
+    def update_write_message(self, id):
+        self.coll_message.update({'_id': ObjectId(id)}, {'$set': {"status": "view"}})
+
     def save_user(self):
         """ Сохранение пользователя в БД(проверить что такого ещё нет) """
     
@@ -106,19 +120,30 @@ class WrapperDB:
 
 
 
-# def creat_BD():
-#     db = ConnectDB().db
-#     # coll_message = db['message']
-#     coll_users = db.users
-#     coll_message = db.message
-#     # doc = {"user_name":"kik", "password":"123"}
-#     # coll_users.save(doc)
-#     a = coll_message.find()
-    
-#     for i in a:
-#         print(i)
-# creat_BD()
+def creat_BD():
+    db = ConnectDB().db
+    # coll_message = db['message']
+    coll_users = db.users
+    # coll_message = db.message
+    doc = {"user_name":"Skiba", "password":"qwerty123"}
+    coll_users.save(doc)
+    # data = coll_message.find({"whom":"kik", "status": "not_view"})
+    id = '5eb28c6e54f72ac038a814c7'
+    # data = coll_message.find({"_id":ObjectId(id)})
+    # coll_message.update({'_id': ObjectId(id)}, {'$set': {"status": "not_view"}})
+    # data = coll_message.find({})
+    # for i in data:
+    #     print(i)
+    # a = [r for r in data]
+    # return data
+    # for i in a:
+    #     print(i)
+# ObjectId('5eb28c6e54f72ac038a814c7')
+creat_BD()
 
+
+
+        
 # {'password': '123', 'message': 'hi', 'whom': 'kik', 'data': 1588759662.14039}
 
 # # --- Использование

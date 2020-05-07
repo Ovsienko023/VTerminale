@@ -11,14 +11,14 @@ class Client:
 
     def check_message(self):
         user_name = self.user_name
-        url = f'http://127.0.0.1:5000/api/v1/{user_name}/check_message'
+        url = f'https://00500421.ngrok.io/api/v1/{user_name}/check_message'
         data = {"password": self.user_password}
         status = self.post(url, data)
         return status
 
     def write_message(self):
         user_name = self.user_name
-        url = f'http://127.0.0.1:5000/api/v1/{user_name}/write_message'
+        url = f'https://00500421.ngrok.io/api/v1/{user_name}/write_message'
         message = Message().message
         data = {"password": self.user_password, 
                 "message":message,
@@ -50,7 +50,7 @@ class User:
         return password
     
     def is_authentication(self):
-        url = f'http://127.0.0.1:5000/api/v1/{self.name}/authentication'
+        url = f'https://00500421.ngrok.io/api/v1/{self.name}/authentication'
         data = {"password": self.password}
         status = requests.post(url, json=data)
         status = status.json()
@@ -59,7 +59,7 @@ class User:
             print("Неправильный логин или пароль, попробуйте снова")
             self.name = input("Login: ")
             self.password = input("Password: ")
-            url = f'http://127.0.0.1:5000/api/v1/{self.name}/authentication'
+            url = f'https://00500421.ngrok.io/api/v1/{self.name}/authentication'
             data = {"password": self.password}
             status = requests.post(url, json=data)
             status = status.json()
@@ -122,11 +122,12 @@ def pars_time(times):
     return a 
 
 
-# main()
+main()
 
-url = r'https://00500421.ngrok.io/api/v1/info/bob'
-data = {"password": '123'}
-status = requests.post(url, json=data)
-print(status.json())
+# url = r'https://00500421.ngrok.io/api/v1/info/bob'
+# data = {"password": '123'}
+# status = requests.post(url, json=data)
+# print(status.json())
 
-
+#____---------------____
+#To write message press "1"

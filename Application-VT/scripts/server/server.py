@@ -12,20 +12,22 @@ app = Flask(__name__)
 def info(user_name):
     # data = request.json
     print(user_name)
-    return {"ok": True}
+    return {"ok": [1,3,4,5]}
 
 @app.route('/api/v1/<user_name>/check_message', methods=['POST'])
 def check_message(user_name):
-    print(user_name)
+    # print(user_name)
     data = request.json
-    print(data)
+    # print(data)
 
     client0 = WrapperDB(user_name, data)
     status =  client0.check_message()
+    print(status)
     if status:
-        print(status, type(status))
+        # print(status, type(status))
+        # print(type()
         return status
-    return {"status": False}
+    return {}
 
 @app.route('/api/v1/<user_name>/write_message/', methods=['POST'])
 def write_message(user_name):
