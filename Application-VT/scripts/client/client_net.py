@@ -3,30 +3,47 @@ import json
 import time
 
 
+def get_config():
+    with open('config.conf')as r:
+        data = r.read()
+        conf_dict = json.loads(data)
+    return conf_dict
+
+
 class Client:
     def __init__(self):
         self.user = User()
         self.user_name = self.user.name
         self.user_password = self.user.password
+        self.url = get_config()['host']
 
     def check_message(self):
-        user_name = self.user_name
-        url = f'https://00500421.ngrok.io/api/v1/{user_name}/check_message'
+        url = f'{self.url}/api/v1/{self.user_name}/check_message'
         data = {"password": self.user_password}
         status = self.post(url, data)
         return status
 
     def write_message(self):
-        user_name = self.user_name
-        url = f'https://00500421.ngrok.io/api/v1/{user_name}/write_message'
+        url = f'{self.url}/api/v1/{self.user_name}/write_message'
+        while True:
+            whom = input("Whom: ")
+            if self.is_user(whom):
+                break
+            print('No user with this name')
+            
         message = Message().message
         data = {"password": self.user_password, 
                 "message":message,
-                "whom": input("Whom: "),
+                "whom": whom,
                 "data": time.time()}
         status = self.post(url, data)
-        # print(status)
 
+    def is_user(self, whom):
+        url = f'{self.url}/api/v1/{self.user_name}/is_users'
+        data = {"password": self.user_password,
+                "whom": whom}
+        status = self.post(url, data)
+        return status['status']
 
     def post(self, url, data):
         status = requests.post(url, json=data)
@@ -34,32 +51,35 @@ class Client:
 
     def get(self, url):
         status = requests(url)
-        print(status.content)
         return status.content
 
 
 class User:
     def __init__(self):
-        self.name = input("Login: ")
+        self.name = self.get_name()
         self.password = self.get_password()
+        self.url = get_config()['host']
         self.authentication = self.is_authentication()
 
+    def get_name(self):
+        name = get_config()['login']
+        return name
+
     def get_password(self):
-        with open('user.conf') as r:
-            password = r.readline()
+        password = get_config()['password']
         return password
     
     def is_authentication(self):
-        url = f'https://00500421.ngrok.io/api/v1/{self.name}/authentication'
+        url = f'{self.url}/api/v1/{self.name}/authentication'
         data = {"password": self.password}
         status = requests.post(url, json=data)
         status = status.json()
 
         while status['status'] == False:
-            print("Неправильный логин или пароль, попробуйте снова")
+            print("Invalid username or password, try again")
             self.name = input("Login: ")
             self.password = input("Password: ")
-            url = f'https://00500421.ngrok.io/api/v1/{self.name}/authentication'
+            url = f'{self.url}/api/v1/{self.name}/authentication'
             data = {"password": self.password}
             status = requests.post(url, json=data)
             status = status.json()
@@ -68,8 +88,12 @@ class User:
         return status['status']
     
     def save_password(self, password):
-        with open('user.conf', 'w') as w:
-            w.write(password)
+        config = get_config()
+        config['password'] = password
+        json_config = json.dumps(config)
+        with open('config.conf', 'w') as w:
+            w.write(json_config)
+
 
 
 class Message:
@@ -83,14 +107,12 @@ class Message:
         pass
 
 
-
-
 def main():
     print("Welcome to Terminal\n")
     client = Client()
     
     while True:
-        print("\nSelect option: \n1) To write a message\n2) To check a messages")
+        print("\nSelect option: \nTo write message press '1'\nTo check messages press '2'")
         answer = input('\n(enter "q" to exit): ')
         print('----------')
         if answer == '1':
@@ -100,12 +122,7 @@ def main():
             message = pars_message(data)
         if answer.lower() == 'q':
             break
-    
-    # print(data, type(data))
-    # mess = f"You have {len(data)} new message"
-    # print(mess)
-    # print('New message!')
-    # print(f"{data['user_name']}: {data['message']}\ntime: {time.ctime(data['data'])}")
+
 def pars_message(data):
     for mes in data['messages']:
         print(f"{mes['user_name']}: {mes['message']}\ntime: {pars_time(mes['data'])}\n")
@@ -124,10 +141,3 @@ def pars_time(times):
 
 main()
 
-# url = r'https://00500421.ngrok.io/api/v1/info/bob'
-# data = {"password": '123'}
-# status = requests.post(url, json=data)
-# print(status.json())
-
-#____---------------____
-#To write message press "1"

@@ -38,25 +38,20 @@ class WrapperDB:
         self.data = data
        
     def is_authentication(self):
+        print(self.user_name, self.__password)
         find = self.coll_users.find_one({"user_name": self.user_name,
                                             "password": self.__password})
-        # print(find)
+        print(find)
         if find:
             return True
         raise AuthenticationError("Method is_authentication in WrapperDB")
-
-    def is_user(self):
-        if self.user_name in list_users:
-            return True
-        return False
     
     def is_message(self):
         'Если БД скажет что: user_name == "Whom" and status == "not_view"'
         if self.user_name == "Whom" and status == "not_view":
             return True
         return False
-# doc = {"name":"Иван", "surname":"Иванов"}
-# coll.save(doc)
+
     def seve_message(self):
         print('save_message')
         doc = dict()
@@ -66,14 +61,11 @@ class WrapperDB:
         doc["message"] = self.data["message"]
         doc["status"] = "not_view"
         a = self.coll_message.save(doc)
-        # print(a)
         
     def check_message(self):
         print('check_message')
         data = self.coll_message.find({"whom": self.user_name, "status": "not_view"})
-        # print(data)
         pars_data = self.parsing(data)
-        # print(pars_data)
         return pars_data
 
     def parsing(self, data):
@@ -99,6 +91,12 @@ class WrapperDB:
     def get_message(self):
         """ Даёт все сообщения где: (user_name == "Whom" and status == "not_view") """
 
+    def is_users(self):
+        data = self.coll_users.find({"user_name": self.data['whom']})
+        status = [user for user in data]
+        if status:
+            return True
+        return False
 
 
 
@@ -139,7 +137,14 @@ def creat_BD():
     # for i in a:
     #     print(i)
 # ObjectId('5eb28c6e54f72ac038a814c7')
-creat_BD()
+# creat_BD()
+def dell_users():
+    db = ConnectDB().db
+    coll_users = db.users
+    coll_users.remove({'_id': ObjectId('5eb46e3e3ac3111aaacc88ff')})
+    data = coll_users.find({})
+    for i in data:
+        print(i)
 
 
 
