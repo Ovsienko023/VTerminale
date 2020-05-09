@@ -65,9 +65,9 @@ def authentication(user_name):
 
 @app.route('/api/v1/<user_name>/registration/', methods=['POST'])
 def registration(user_name):
-    """ Проверяет есть ли такой Логин и если нет,
-        создаёт password и отправляет его пользователю. """
-    pass
+    data = request.json
+    status = WrapperDB.save_reg_user(user_name, data)
+    return {"status": status}
 
 
 @app.route('/api/v1/<user_name>/is_users/', methods=['POST'])
@@ -77,3 +77,14 @@ def is_users(user_name):
     info = WrapperDB(user_name, data)
     status = info.is_users()
     return {"status": status}
+
+
+@app.route('/api/v1/<user_name>/is_login', methods=['POST'])
+def is_login(user_name):
+    print(user_name)
+    data = request.json
+    print(data)
+    status = WrapperDB.is_login(user_name)
+    return {"status": status}
+
+

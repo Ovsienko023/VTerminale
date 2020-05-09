@@ -95,6 +95,29 @@ class WrapperDB:
         if status:
             return True
         return False
+    @classmethod
+    def is_login(cls, user_name):
+        db = ConnectDB().db
+        coll_users = db.users
+        data = coll_users.find({"user_name": user_name})
+        status = [user for user in data]
+        print(status)
+        if status:
+            return True
+        return False
+    
+    @classmethod
+    def save_reg_user(cls, user_name, data):
+        db = ConnectDB().db
+        coll_users = db.users
+        password = data['password']
+
+        doc = {"user_name": user_name, "password": password}
+        if coll_users.save(doc):
+            return True
+        return False
+
+
 
 
 # --- Использование
@@ -115,16 +138,16 @@ def creat_BD():
     # coll_message = db['message']
     coll_users = db.users
     # coll_message = db.message
-    doc = {"user_name": "Skiba", "password": "qwerty123"}
+    doc = {"user_name": "Marianne", "password": "jwebwei32r292294gIBI342G"}
     coll_users.save(doc)
     # data = coll_message.find({"whom":"kik", "status": "not_view"})
-    id = '5eb28c6e54f72ac038a814c7'
+    # id = '5eb28c6e54f72ac038a814c7'
     # data = coll_message.find({"_id":ObjectId(id)})
     # coll_message.update({'_id': ObjectId(id)},
     #                     {'$set': {"status": "not_view"}})
-    # data = coll_message.find({})
-    # for i in data:
-    #     print(i)
+    data = coll_users.find({})
+    for i in data:
+        print(i)
     # a = [r for r in data]
     # return data
     # for i in a:
@@ -136,11 +159,11 @@ def creat_BD():
 def dell_users():
     db = ConnectDB().db
     coll_users = db.users
-    coll_users.remove({'_id': ObjectId('5eb46e3e3ac3111aaacc88ff')})
+    coll_users.remove({'_id': ObjectId('5eb6fafbc5d51337a1cefa75')})
     data = coll_users.find({})
     for i in data:
         print(i)
-
+# dell_users()
 
 # {'password': '123', 'message': 'hi', 'whom': 'kik', 'data': 1588759662.14039}
 

@@ -10,6 +10,19 @@ def get_config():
     return conf_dict
 
 
+class color: 
+    PURPLE = '\033[95m' 
+    CYAN = '\033[96m' 
+    DARKCYAN = '\033[36m' 
+    BLUE = '\033[94m' 
+    GREEN = '\033[92m' 
+    YELLOW = '\033[93m' 
+    RED = '\033[91m' 
+    BOLD = '\033[1m' 
+    UNDERLINE = '\033[4m' 
+    END = '\033[0m' 
+
+
 class Client:
     def __init__(self):
         self.user = User()
@@ -29,7 +42,7 @@ class Client:
             whom = input("Whom: ")
             if self.is_user(whom):
                 break
-            print('No user with this name')
+            print(color.RED + 'No user with this name' + color.END)
 
         message = Message().message
         data = {"password": self.user_password,
@@ -38,21 +51,58 @@ class Client:
                 "data": time.time()}
         status = self.post(url, data)
 
+    def save_config(self, conf):
+        with open('config.conf', 'w')as w:
+            json_dict = json.dumps(conf)
+            w.write(json_dict)
+
     def is_user(self, whom):
         url = f'{self.url}/api/v1/{self.user_name}/is_users'
         data = {"password": self.user_password,
                 "whom": whom}
         status = self.post(url, data)
         return status['status']
-
+    
     def post(self, url, data):
         status = requests.post(url, json=data)
         return status.json()
 
-    def get(self, url):
-        status = requests(url)
-        return status.content
 
+class Reg:
+    url_host = get_config()['host']
+
+    @classmethod
+    def registration(cls):
+        """ Save login and password in config.conf """
+        while True:
+            login = input("Enter login: ")
+            if not cls.is_login(login):
+                password = input("Enter password: ")
+                repeat_password = input("Repeat password: ")
+                if password == repeat_password:
+                    conf = get_config()
+                    cls.save_config(conf)
+                    break     
+        url = f'{cls.url_host}/api/v1/{login}/registration/'
+        data = {"password": password}
+        status = requests.post(url, json=data)
+        status = status.json()
+        if status['status']:
+            print('You have successfully registered!')
+
+    @classmethod
+    def is_login(cls, login):
+        url = f'{cls.url_host}/api/v1/{login}/is_login'
+        status = requests.post(url, json=None)
+        status = status.json()
+        return status['status']
+    
+    @classmethod
+    def save_config(cls, conf):
+        with open('config.conf', 'w')as w:
+            json_dict = json.dumps(conf)
+            w.write(json_dict)
+    
 
 class User:
     def __init__(self):
@@ -76,7 +126,13 @@ class User:
         status = status.json()
 
         while not status['status']:
-            print("Invalid username or password, try again")
+            print('To register, press "0"')
+            print('To continue without registration, press "Enter"\n')
+            command = input()
+            if command == '0':
+                print(color.UNDERLINE + 'Registration' + color.END)
+                Reg.registration()
+
             self.name = input("Login: ")
             self.password = input("Password: ")
             url = f'{self.url}/api/v1/{self.name}/authentication'
@@ -84,12 +140,13 @@ class User:
             status = requests.post(url, json=data)
             status = status.json()
             print('\n\n')
-        self.save_password(self.password)
+        self.save_password(self.password, self.name)
         return status['status']
 
-    def save_password(self, password):
+    def save_password(self, password, login):
         config = get_config()
         config['password'] = password
+        config['login'] = login
         json_config = json.dumps(config)
         with open('config.conf', 'w') as w:
             w.write(json_config)
@@ -106,12 +163,21 @@ class Message:
         pass
 
 
+
 def main():
-    print("Welcome to Terminal\n")
+    print (color.UNDERLINE + 'Welcome to Terminal\n' + color.END)
     client = Client()
+    
+    # print('To register, press "0"')
+    # print('To continue without registration, press "Enter"\n')
+    # reg = input('')
+    # print('----------')
+    # if reg == '0':
+    #     client.registration()
+    # client = Client()
 
     while True:
-        print("\nSelect option: \nTo write message press '1'\nTo check messages press '2'")
+        print('\nSelect option: \nTo write message press "1"\nTo check messages press "2"')
         answer = input('\n(enter "q" to exit): ')
         print('----------')
         if answer == '1':
@@ -139,5 +205,8 @@ def pars_time(times):
     a = ' '.join(a)
     return a
 
-
-main()
+try:
+    main()
+except json.JSONDecodeError:
+    print(color.RED + 'Restart' + color.END + '\n\n\n')
+    main()
