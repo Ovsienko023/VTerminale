@@ -12,7 +12,8 @@ app = Flask(__name__)
 def info(user_name):
     # data = request.json
     print(user_name)
-    return {"ok": [1,3,4,5]}
+    return {"ok": [1, 3, 4, 5]}
+
 
 @app.route('/api/v1/<user_name>/check_message', methods=['POST'])
 def check_message(user_name):
@@ -21,13 +22,14 @@ def check_message(user_name):
     # print(data)
 
     client0 = WrapperDB(user_name, data)
-    status =  client0.check_message()
+    status = client0.check_message()
     print(status)
     if status:
         # print(status, type(status))
         # print(type()
         return status
     return {}
+
 
 @app.route('/api/v1/<user_name>/write_message/', methods=['POST'])
 def write_message(user_name):
@@ -38,6 +40,7 @@ def write_message(user_name):
     client = WrapperDB(user_name, data)
     client.seve_message()
     return {"ok write message": True}
+
 
 @app.route('/api/v1/<user_name>/authentication/', methods=['POST'])
 def authentication(user_name):
@@ -59,10 +62,13 @@ def authentication(user_name):
     print(status)
     return {"status": status}
 
+
 @app.route('/api/v1/<user_name>/registration/', methods=['POST'])
 def registration(user_name):
-    """ Проверяет есть ли такой Логин и если нет, создаёт password и отправляет его пользователю """
+    """ Проверяет есть ли такой Логин и если нет,
+        создаёт password и отправляет его пользователю. """
     pass
+
 
 @app.route('/api/v1/<user_name>/is_users/', methods=['POST'])
 def is_users(user_name):

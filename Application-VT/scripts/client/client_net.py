@@ -30,10 +30,10 @@ class Client:
             if self.is_user(whom):
                 break
             print('No user with this name')
-            
+
         message = Message().message
-        data = {"password": self.user_password, 
-                "message":message,
+        data = {"password": self.user_password,
+                "message": message,
                 "whom": whom,
                 "data": time.time()}
         status = self.post(url, data)
@@ -68,14 +68,14 @@ class User:
     def get_password(self):
         password = get_config()['password']
         return password
-    
+
     def is_authentication(self):
         url = f'{self.url}/api/v1/{self.name}/authentication'
         data = {"password": self.password}
         status = requests.post(url, json=data)
         status = status.json()
 
-        while status['status'] == False:
+        while not status['status']:
             print("Invalid username or password, try again")
             self.name = input("Login: ")
             self.password = input("Password: ")
@@ -86,14 +86,13 @@ class User:
             print('\n\n')
         self.save_password(self.password)
         return status['status']
-    
+
     def save_password(self, password):
         config = get_config()
         config['password'] = password
         json_config = json.dumps(config)
         with open('config.conf', 'w') as w:
             w.write(json_config)
-
 
 
 class Message:
@@ -110,7 +109,7 @@ class Message:
 def main():
     print("Welcome to Terminal\n")
     client = Client()
-    
+
     while True:
         print("\nSelect option: \nTo write message press '1'\nTo check messages press '2'")
         answer = input('\n(enter "q" to exit): ')
@@ -123,11 +122,13 @@ def main():
         if answer.lower() == 'q':
             break
 
+
 def pars_message(data):
     for mes in data['messages']:
         print(f"{mes['user_name']}: {mes['message']}\ntime: {pars_time(mes['data'])}\n")
     input("Enter to return")
     print('----------')
+
 
 def pars_time(times):
     """ converts date from 1588759662.14039 to  May 13:07:42 2020 """
@@ -136,8 +137,7 @@ def pars_time(times):
     del a[0], a[1]
     a[0], a[1] = a[1], a[0]
     a = ' '.join(a)
-    return a 
+    return a
 
 
 main()
-

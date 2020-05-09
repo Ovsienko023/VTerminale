@@ -3,6 +3,7 @@ import os
 import json
 from bson.objectid import ObjectId
 
+
 class AuthenticationError(Exception):
     pass
 
@@ -25,27 +26,25 @@ class ConnectDB():
         return host, int(port)
 
 
-
-
 class WrapperDB:
     def __init__(self, user_name, data):
         self.db = ConnectDB().db
         self.coll_users = self.db.users
         self.coll_message = self.db.message
-        self.user_name = user_name 
+        self.user_name = user_name
         self.__password = data["password"]
         self.authentication = self.is_authentication()
         self.data = data
-       
+
     def is_authentication(self):
         print(self.user_name, self.__password)
         find = self.coll_users.find_one({"user_name": self.user_name,
-                                            "password": self.__password})
+                                         "password": self.__password})
         print(find)
         if find:
             return True
         raise AuthenticationError("Method is_authentication in WrapperDB")
-    
+
     def is_message(self):
         'Если БД скажет что: user_name == "Whom" and status == "not_view"'
         if self.user_name == "Whom" and status == "not_view":
@@ -61,10 +60,11 @@ class WrapperDB:
         doc["message"] = self.data["message"]
         doc["status"] = "not_view"
         a = self.coll_message.save(doc)
-        
+
     def check_message(self):
         print('check_message')
-        data = self.coll_message.find({"whom": self.user_name, "status": "not_view"})
+        data = self.coll_message.find({"whom": self.user_name,
+                                       "status": "not_view"})
         pars_data = self.parsing(data)
         return pars_data
 
@@ -77,19 +77,17 @@ class WrapperDB:
                 id = mess['_id']
                 self.update_write_message(id)
                 del mess['_id']
-                new_data['messages'].append(mess)  
+                new_data['messages'].append(mess)
             return new_data
         except TypeError:
             return None
-              
+
     def update_write_message(self, id):
-        self.coll_message.update({'_id': ObjectId(id)}, {'$set': {"status": "view"}})
+        self.coll_message.update({'_id': ObjectId(id)},
+                                 {'$set': {"status": "view"}})
 
     def save_user(self):
         """ Сохранение пользователя в БД(проверить что такого ещё нет) """
-    
-    def get_message(self):
-        """ Даёт все сообщения где: (user_name == "Whom" and status == "not_view") """
 
     def is_users(self):
         data = self.coll_users.find({"user_name": self.data['whom']})
@@ -99,23 +97,17 @@ class WrapperDB:
         return False
 
 
-
-
-
-
-
-# # --- Использование
+# --- Использование
 # db = ConnectDB().db
 # coll = db.mycoll
 
-# # --- Найти по _id
+# --- Найти по _id
 # a = coll.find_one({"_id": ObjectId('5eaf9d2dd28025c76c4d896f')})
 # print(a)
 
-#--- Сохранение данных
+# --- Сохранение данных
 # doc = {"name":"Иван", "surname":"Иванов"}
 # coll.save(doc)
-
 
 
 def creat_BD():
@@ -123,12 +115,13 @@ def creat_BD():
     # coll_message = db['message']
     coll_users = db.users
     # coll_message = db.message
-    doc = {"user_name":"Skiba", "password":"qwerty123"}
+    doc = {"user_name": "Skiba", "password": "qwerty123"}
     coll_users.save(doc)
     # data = coll_message.find({"whom":"kik", "status": "not_view"})
     id = '5eb28c6e54f72ac038a814c7'
     # data = coll_message.find({"_id":ObjectId(id)})
-    # coll_message.update({'_id': ObjectId(id)}, {'$set': {"status": "not_view"}})
+    # coll_message.update({'_id': ObjectId(id)},
+    #                     {'$set': {"status": "not_view"}})
     # data = coll_message.find({})
     # for i in data:
     #     print(i)
@@ -138,6 +131,8 @@ def creat_BD():
     #     print(i)
 # ObjectId('5eb28c6e54f72ac038a814c7')
 # creat_BD()
+
+
 def dell_users():
     db = ConnectDB().db
     coll_users = db.users
@@ -147,8 +142,6 @@ def dell_users():
         print(i)
 
 
-
-        
 # {'password': '123', 'message': 'hi', 'whom': 'kik', 'data': 1588759662.14039}
 
 # # --- Использование
