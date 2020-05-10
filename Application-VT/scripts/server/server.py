@@ -48,17 +48,11 @@ def authentication(user_name):
     print(user_name)
     data = request.json
     print(data)
-    # command = 'authentication'
-    # status = main_logic(user_name, data, command)
     try:
         WrapperDB(user_name, data)
         status = True
     except AuthenticationError:
         status = False
-    # if user_name == 'bob':
-    #     if data['password'] == '123':
-    #         return {"status": True}
-    # return {"status": False}
     print(status)
     return {"status": status}
 
@@ -69,7 +63,7 @@ def registration(user_name):
     status = WrapperDB.save_reg_user(user_name, data)
     return {"status": status}
 
-
+###### ДУБЛИРОВАНИЕ
 @app.route('/api/v1/<user_name>/is_users/', methods=['POST'])
 def is_users(user_name):
     data = request.json
@@ -77,7 +71,7 @@ def is_users(user_name):
     info = WrapperDB(user_name, data)
     status = info.is_users()
     return {"status": status}
-
+###### ДУБЛИРОВАНИЕ
 
 @app.route('/api/v1/<user_name>/is_login', methods=['POST'])
 def is_login(user_name):

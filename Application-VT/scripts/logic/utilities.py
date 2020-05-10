@@ -138,8 +138,8 @@ def creat_BD():
     # coll_message = db['message']
     coll_users = db.users
     # coll_message = db.message
-    doc = {"user_name": "Marianne", "password": "jwebwei32r292294gIBI342G"}
-    coll_users.save(doc)
+    # doc = {"user_name": "Marianne", "password": "jwebwei32r292294gIBI342G"}
+    # coll_users.save(doc)
     # data = coll_message.find({"whom":"kik", "status": "not_view"})
     # id = '5eb28c6e54f72ac038a814c7'
     # data = coll_message.find({"_id":ObjectId(id)})
@@ -159,11 +159,11 @@ def creat_BD():
 def dell_users():
     db = ConnectDB().db
     coll_users = db.users
-    coll_users.remove({'_id': ObjectId('5eb6fafbc5d51337a1cefa75')})
+    coll_users.remove({'_id': ObjectId('5eb46d8ff56e128e6ba975e7')})
     data = coll_users.find({})
     for i in data:
         print(i)
-# dell_users()
+dell_users()
 
 # {'password': '123', 'message': 'hi', 'whom': 'kik', 'data': 1588759662.14039}
 
