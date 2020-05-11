@@ -2,9 +2,10 @@ import requests
 import json
 import time
 
-
+import sys 
+print(sys.path)
 def get_config():
-    with open('config.conf')as r:
+    with open('config.txt')as r:
         data = r.read()
         conf_dict = json.loads(data)
     return conf_dict
@@ -52,7 +53,7 @@ class Client:
         status = self.post(url, data)
 
     def save_config(self, conf):
-        with open('config.conf', 'w')as w:
+        with open('config.txt', 'w')as w:
             json_dict = json.dumps(conf)
             w.write(json_dict)
 
@@ -73,7 +74,7 @@ class Reg:
 
     @classmethod
     def registration(cls):
-        """ Save login and password in config.conf """
+        """ Save login and password in config.txt """
         while True:
             login = input("Enter login: ")
             if not cls.is_login(login):
@@ -99,7 +100,7 @@ class Reg:
     
     @classmethod
     def save_config(cls, conf):
-        with open('config.conf', 'w')as w:
+        with open('config.txt', 'w')as w:
             json_dict = json.dumps(conf)
             w.write(json_dict)
     
@@ -148,7 +149,7 @@ class User:
         config['password'] = password
         config['login'] = login
         json_config = json.dumps(config)
-        with open('config.conf', 'w') as w:
+        with open('config.txt', 'w') as w:
             w.write(json_config)
 
 
