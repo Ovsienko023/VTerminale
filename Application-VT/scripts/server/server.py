@@ -82,3 +82,4 @@ def is_login(user_name):
     return {"status": status}
 
 
+'https://stackoverflow.com/questions/54992412/flask-login-usermixin-class-with-a-mongodb'
