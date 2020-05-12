@@ -1,7 +1,11 @@
 import pymongo
 import os
 import json
+import sys
 from bson.objectid import ObjectId
+
+
+OS = sys.platform
 
 
 class AuthenticationError(Exception):
@@ -15,10 +19,16 @@ class ConnectDB():
         self.db = self.conn.mydb
 
     def config_app(self):
-        path = os.getcwd() + "/Application-VT/config.txt"
-        with open(path) as config:
-            json_str = config.read()
-            return json.loads(json_str)
+        if OS == 'win32':
+            path = os.getcwd() + "\Application-VT\config.txt"
+            with open(path) as config:
+                json_str = config.read()
+                return json.loads(json_str)
+        else:
+            path = os.getcwd() + "/Application-VT/config.txt"
+            with open(path) as config:
+                json_str = config.read()
+                return json.loads(json_str)
 
     def get_info_db(self):
         info_db = self.config_app()['Data_Base']

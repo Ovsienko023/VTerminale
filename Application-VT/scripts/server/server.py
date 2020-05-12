@@ -1,7 +1,7 @@
 from flask import Flask, request
 # from scripts.logic.core_logic import main_logic
-from scripts.logic.utilities import WrapperDB
-from scripts.logic.utilities import AuthenticationError
+# from scripts.logic.utilities import WrapperDB
+# from scripts.logic.utilities import AuthenticationError
 import json
 
 
@@ -81,5 +81,5 @@ def is_login(user_name):
     status = WrapperDB.is_login(user_name)
     return {"status": status}
 
-
-'https://stackoverflow.com/questions/54992412/flask-login-usermixin-class-with-a-mongodb'
+# app.run()
+# 'https://stackoverflow.com/questions/54992412/flask-login-usermixin-class-with-a-mongodb'
