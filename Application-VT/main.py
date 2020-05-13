@@ -18,6 +18,7 @@ def conf_server():
         port = json_str['server']['port']
         return host, port
     else:
+        print('!!')
         with open('Application-VT/config.txt') as config:
             json_str = config.read()
             json_str = json.loads(json_str)
