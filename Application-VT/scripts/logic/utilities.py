@@ -3,8 +3,6 @@ import os
 import json
 import sys
 from bson.objectid import ObjectId
-
-
 OS = sys.platform
 
 
@@ -42,8 +40,7 @@ class WrapperDB:
         self.coll_users = self.db.users
         self.coll_message = self.db.message
 
-    #!Норм
-    def is_authentication(self, login, password):
+    def is_authentication(self, login, password) -> bool:
         print(login, password)
         find = self.coll_users.find_one({"user_name": login,
                                          "password": password})
@@ -51,20 +48,21 @@ class WrapperDB:
         if find:
             return True
         return False
-    #!Норм    
-    def registration(self, login, password):
+
+    def registration(self, login, password) -> bool:
         doc = {"user_name": login, "password": password}
         if self.coll_users.save(doc):
             return True
         return False
-    #!Норм
-    def is_user(self, login):
+
+    def is_user(self, login) -> bool:
         data = self.coll_users.find({"user_name": login})
         status = [user for user in data]
+        print(status)
         if status:
             return True
         return False
-    #!Норм
+
     def seve_message(self, doc):
         status = self.coll_message.save(doc)
         if status:
@@ -80,7 +78,7 @@ class WrapperDB:
     def update_write_message(self, id):
         self.coll_message.update({'_id': ObjectId(id)},
                                  {'$set': {"status": "view"}})
-    
+
 
 class Destributor:
     def __init__(self, login, password, data=None):
@@ -88,127 +86,102 @@ class Destributor:
         self.authentication = WrapperDB().is_authentication(login, password)
         self.data = data
 
-    def registration(self):
+    def registration(self) -> bool:
+        print('registration')
         login = self.user.login
         password = self.user.password
         if not WrapperDB().is_user(login):
             status = WrapperDB().registration(login, password)
             return status
-        return 'Login already in uselogin'
+        return False
 
-    def seve_message(self, data):
+    def seve_message(self, data) -> bool:
         print('save_message')
-        doc = dict()
-        doc["user_name"] = self.user.login
-        doc["whom"] = self.data["whom"]
-        doc["data"] = self.data["data"]
-        doc["message"] = self.data["message"]
-        doc["status"] = "not_view"
-        status = WrapperDB().seve_message(doc)
-        return status
+        if WrapperDB().is_user(data['whom']):
+            doc = dict()
+            doc["user_name"] = self.user.login
+            doc["whom"] = self.data["whom"]
+            doc["data"] = self.data["data"]
+            doc["message"] = self.data["message"]
+            doc["status"] = "not_view"
+            status = WrapperDB().seve_message(doc)
+            return status
+        return False
 
     def is_whom_user(self, data):
+        print('is_whom_user')
         whom = data['whom']
         status = WrapperDB().is_user(whom)
         return status
 
     def check_message(self):
+        print('check_message')
         message = WrapperDB().check_message(self.user.login)
         pars_data = self.parsing(message)
         return pars_data
 
     def parsing(self, data):
         """ Parsing data in dict(dict()...) """
-        for i in data:
-            print(i)
         try:
             new_data = dict()
             new_data['messages'] = []
             for mess in data:
                 id = mess['_id']
-                self.update_write_message(id)
+                WrapperDB().update_write_message(id)
                 del mess['_id']
                 new_data['messages'].append(mess)
+                if new_data['messages']:
+                    new_data['status'] = True
+                
+            new_data['status'] = False
             return new_data
         except TypeError:
             return None
 
+    def is_user(self):
+        status = WrapperDB().is_user(self.user.login)
+        return status
 
 
+class CommandDB(WrapperDB):
+    def dell_user(self, id):
+        self.coll_users.remove({'_id': ObjectId(id)})
+        data = self.coll_users.find({})
+        print(data)
+
+    def find_to_user_id(self, id):
+        status = self.coll_users.find_one({"_id": ObjectId(id)})
+        print(status)
+
+    def find_to_message_id(self, id):
+        status = self.coll_message.find_one({"_id": ObjectId(id)})
+        print(status)
+
+    def create_new_user(self, login, password):
+        doc = {"user_name": login, "password": password}
+        status = self.coll_users.save(doc)
+        print(status)
+
+    def get_all_users(self):
+        users = self.coll_users.find({})
+        for user in users:
+            print(user)
+
+    def message_update(self, id):
+        self.coll_message.update_one({'_id': ObjectId(id)}, {'$set': {"status": "view"}})
+
+    def get_all_message(self):
+        messages = self.coll_message.find({})
+        for mess in messages:
+            print(mess)
 
 
+def use_admin_command():
+    CommandDB().create_new_user('Marli', 'c2br32r3')
+    CommandDB().dell_user('5ebbc1a616c8491443fd40f1')
+    CommandDB().get_all_users()
+    CommandDB().message_update('5ebbff04e49793d4574b7c47')
+    CommandDB().get_all_message()
 
-
-
-
-
-
-
-
-
-#     @classmethod
-#     def is_login(cls, user_name):
-#         db = ConnectDB().db
-#         coll_users = db.users
-#         data = coll_users.find({"user_name": user_name})
-#         status = [user for user in data]
-#         print(status)
-#         if status:
-#             return True
-#         return False
-    
-#     
-# # --- Использование
-# # db = ConnectDB().db
-# # coll = db.mycoll
-
-# # --- Найти по _id
-# # a = coll.find_one({"_id": ObjectId('5eaf9d2dd28025c76c4d896f')})
-# # print(a)
-
-# # --- Сохранение данных
-# # doc = {"name":"Иван", "surname":"Иванов"}
-# # coll.save(doc)
-
-
-def creat_BD():
-    db = ConnectDB().db
-    # coll_message = db['message']
-    coll_users = db.users
-    coll_message = db.message
-    # doc = {"user_name": "Marianne", "password": "jwebwei32r292294gIBI342G"}
-    # coll_users.save(doc)
-    # data = coll_message.find({"whom":"kik", "status": "not_view"})
-    # id = '5eb28c6e54f72ac038a814c7'
-    # data = coll_message.find({"_id":ObjectId(id)})
-    # coll_message.update({'_id': ObjectId(id)},
-    #                     {'$set': {"status": "not_view"}})
-    data = coll_message.find({})
-    for i in data:
-        print(i)
-    # a = [r for r in data]
-    # return data
-    # for i in a:
-    #     print(i)
-# # ObjectId('5eb28c6e54f72ac038a814c7')
-# creat_BD()
-
-
-def dell_users():
-    db = ConnectDB().db
-    coll_users = db.users
-    coll_users.remove({'_id': ObjectId('5ebbb0594ae3353b058914c2')})
-    data = coll_users.find({})
-    for i in data:
-        print(i)
-# dell_users()
-
-# # {'password': '123', 'message': 'hi', 'whom': 'kik', 'data': 1588759662.14039}
-
-# # # --- Использование
-# # db = ConnectDB().db
-# # coll = db.message
-
-# # # --- Найти по _id
-# # a = coll.find_one({"_id": ObjectId('5eb28c6e54f72ac038a814c7')})
-# # print(a)
+# CommandDB().dell_user('5ebd238e35381f6e216ed301')
+# CommandDB().get_all_users()
