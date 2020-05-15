@@ -1,84 +1,99 @@
 from flask import Flask, request
-# from scripts.logic.core_logic import main_logic
-from scripts.logic.utilities import WrapperDB
 from scripts.logic.utilities import AuthenticationError
+from scripts.logic.utilities import Destributor
+from scripts.logic.utilities import WrapperDB
 import json
 
 
 app = Flask(__name__)
 
 
-@app.route('/api/v1/info/<user_name>', methods=['POST'])
-def info(user_name):
-    # data = request.json
-    print(user_name)
-    return {"ok": [1, 3, 4, 5]}
-
-
-@app.route('/api/v1/<user_name>/check_message', methods=['POST'])
-def check_message(user_name):
-    # print(user_name)
+@app.route('/api/v2/registration/', methods=['POST'])
+def registration():
     data = request.json
-    # print(data)
-
-    client0 = WrapperDB(user_name, data)
-    status = client0.check_message()
-    print(status)
-    if status:
-        # print(status, type(status))
-        # print(type()
-        return status
-    return {}
+    login = data['login']
+    password = data['password']
+    user = Destributor(login, password)
+    status = user.registration()
+    return {"status": status}
 
 
-@app.route('/api/v1/<user_name>/write_message/', methods=['POST'])
-def write_message(user_name):
-    print(user_name)
-    data = request.json
-    print(data)
-
-    client = WrapperDB(user_name, data)
-    client.seve_message()
-    return {"ok write message": True}
-
-
-@app.route('/api/v1/<user_name>/authentication/', methods=['POST'])
-def authentication(user_name):
+@app.route('/api/v2/<login>/authentication/', methods=['POST'])
+def authentication(login):
     """ Сравнивает логин и пароль пользователя с БД """
-    print(user_name)
+    print(login)
     data = request.json
     print(data)
-    try:
-        WrapperDB(user_name, data)
-        status = True
-    except AuthenticationError:
-        status = False
-    print(status)
-    return {"status": status}
+    password = data['password']
+    user = Destributor(login, password)
+    if user.authentication:
+        return {'status': True}
+    return {'status': False}
 
 
-@app.route('/api/v1/<user_name>/registration/', methods=['POST'])
-def registration(user_name):
-    data = request.json
-    status = WrapperDB.save_reg_user(user_name, data)
-    return {"status": status}
-
-###### ДУБЛИРОВАНИЕ
-@app.route('/api/v1/<user_name>/is_users/', methods=['POST'])
-def is_users(user_name):
+@app.route('/api/v2/is_login/', methods=['POST'])
+def is_login():
     data = request.json
     print(data)
-    info = WrapperDB(user_name, data)
-    status = info.is_users()
+    login = data['login']
+    user = Destributor(login, '-')
+    status = user.is_user()
     return {"status": status}
-###### ДУБЛИРОВАНИЕ
 
-@app.route('/api/v1/<user_name>/is_login', methods=['POST'])
-def is_login(user_name):
-    print(user_name)
+
+@app.route('/api/v2/<login>/is_whom_login/', methods=['POST'])
+def is_whom_login(login):
     data = request.json
     print(data)
-    status = WrapperDB.is_login(user_name)
-    return {"status": status}
+    password = data['password']
+    user = Destributor(login, password)
+    if user.authentication:
+        user = Destributor(login, password, data=data)
+        status = user.is_whom_user(data)
+        return {"status": status}
 
 
+@app.route('/api/v2/<login>/write_message/', methods=['POST'])
+def write_message(login):
+    print(login)
+    data = request.json
+    print(data)
+    password = data['password']
+    user = Destributor(login, password, data)
+    if user.authentication:
+        status = user.seve_message(data)
+        return {"status": status}
+    return {"status": False}
+
+
+@app.route('/api/v2/<login>/read_message/', methods=['POST'])
+def read_message(login):
+    print(login)
+    data = request.json
+    print(data)
+    password = data['password']
+    user = Destributor(login, password)
+    if user.authentication:
+        print('!!!!!!!')
+        status = user.read_message()
+        print(status)
+        if status['messages']:
+            return status
+        status['status'] = False
+        return status
+    return {"status": False}
+
+
+@app.route('/api/v2/<login>/check_message/', methods=['POST'])
+def check_message(login):
+    print(login)
+    data = request.json
+    print(data, '!!!')
+    password = data['password']
+    user = Destributor(login, password)
+    if user.authentication:
+        counter = user.check_message()
+        return{"status": True,
+               "counter": counter}
+    return {"status": False,
+            "counter": 0}
