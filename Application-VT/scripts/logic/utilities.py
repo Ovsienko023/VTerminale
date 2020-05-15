@@ -70,7 +70,6 @@ class WrapperDB:
         return False
 
     def check_message(self, login):
-        print('check_message')
         data = self.coll_message.find({"whom": login,
                                        "status": "not_view"})
         return data
@@ -114,11 +113,18 @@ class Destributor:
         status = WrapperDB().is_user(whom)
         return status
 
-    def check_message(self):
-        print('check_message')
+    def read_message(self):
+        print('read_message')
         message = WrapperDB().check_message(self.user.login)
         pars_data = self.parsing(message)
         return pars_data
+    
+    def check_message(self):
+        print('check_message')
+        message = WrapperDB().check_message(self.user.login)
+        counter = len([i for i in message])
+        return counter
+
 
     def parsing(self, data):
         """ Parsing data in dict(dict()...) """
@@ -132,8 +138,6 @@ class Destributor:
                 new_data['messages'].append(mess)
                 if new_data['messages']:
                     new_data['status'] = True
-                
-            new_data['status'] = False
             return new_data
         except TypeError:
             return None

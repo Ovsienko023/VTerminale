@@ -46,6 +46,7 @@ def is_whom_login(login):
     data = request.json
     print(data)
     password = data['password']
+    user = Destributor(login, password)
     if user.authentication:
         user = Destributor(login, password, data=data)
         status = user.is_whom_user(data)
@@ -65,18 +66,34 @@ def write_message(login):
     return {"status": False}
 
 
-@app.route('/api/v2/<login>/check_message/', methods=['POST'])
-def check_message(login):
+@app.route('/api/v2/<login>/read_message/', methods=['POST'])
+def read_message(login):
     print(login)
     data = request.json
     print(data)
     password = data['password']
     user = Destributor(login, password)
     if user.authentication:
-        status = user.check_message()
+        print('!!!!!!!')
+        status = user.read_message()
         print(status)
         if status['messages']:
             return status
         status['status'] = False
         return status
     return {"status": False}
+
+
+@app.route('/api/v2/<login>/check_message/', methods=['POST'])
+def check_message(login):
+    print(login)
+    data = request.json
+    print(data, '!!!')
+    password = data['password']
+    user = Destributor(login, password)
+    if user.authentication:
+        counter = user.check_message()
+        return{"status": True,
+               "counter": counter}
+    return {"status": False,
+            "counter": 0}

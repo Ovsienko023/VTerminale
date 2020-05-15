@@ -57,6 +57,7 @@ class RequestServ:
         self.url_authentication = self.host + f'api/v2/{self.login}/authentication/'
         self.url_is_whom_login = self.host + f'api/v2/{self.login}/is_whom_login/'
         self.url_write_message = self.host + f'api/v2/{self.login}/write_message/'
+        self.url_read_message = self.host + f'api/v2/{self.login}/read_message/'
         self.url_check_message = self.host + f'api/v2/{self.login}/check_message/'
 
     
@@ -85,6 +86,11 @@ class RequestServ:
         status = requests.post(self.url_write_message, json=data)
         return status.json()
 
+    def read_message(self):
+        data = {"password": self.password}
+        status = requests.post(self.url_read_message, json=data)
+        return status.json()
+    
     def check_message(self):
         data = {"password": self.password}
         status = requests.post(self.url_check_message, json=data)
@@ -95,35 +101,36 @@ class RequestServ:
         status = requests.post(self.url_is_login, json=data)
         return status.json()
 
-user = RequestServ()
-status = user.check_message()
-print(status)
-
 
 def main():
     print ('Welcome to Terminal\n')
     user = RequestServ()
-    while not user.authentication():
-        print('To register, press "0"')
+    while not user.authentication()['status']:
+        print(user.authentication()['status'])
+        print('\nTo register, press "0"')
         print('To continue without registration, press "Enter"\n')
         command = input()
         if command == '0':
             print('Registration')
             menu_reg(user)
-            
+
         login = input("Login: ")
         password = input("Password: ")
-    User().chenge_user(login, password)
+        User().chenge_user(login, password)
+        user = RequestServ()
+
     menu_main(user)
 
 
 def menu_reg(user):
     while True:
         login = input("Enter login: ")
+        print(login)
         if not user.is_login(login):
             password = input("Enter password: ")
             repeat_password = input("Repeat password: ")
             if password == repeat_password:
+                print(login)
                 User().chenge_user(login, password)
                 break    
     status = user.registration(login, password)            
@@ -134,30 +141,43 @@ def menu_reg(user):
 def menu_main(user):
     while True:
         print('\nSelect option: \nTo write message press "1"\nTo check messages press "2"')
+        data = user.check_message()['counter']
+        if data == 0:
+            print(f'(No messages)')
+        elif data == 1:
+            print(f'(You have {data} message)')
+        else:
+            print(f'(You have {data} posts)')
+        
         answer = input('\n(enter "q" to exit): ')
         print('----------')
         if answer == '1':
             whom = whom_is(user)
-            message = Message()
+            message = Message().message
             status = user.write_message(whom, message)
             print(status)
         if answer == '2':
-            data = user.check_message()
+            data = user.read_message()
             pars_message(data)
         if answer.lower() == 'q':
             break
 
 def whom_is(user):
-    whom = input('Enter')
-    while not user.is_whom_login():
-        whom = input('Enter')
-        user.is_whom_login()
+    whom = input('\nWhom: ')
+    while not user.is_whom_login(whom)['status']:
+        print('User is not found!')
+        whom = input('\nWhom: ')
+        # user.is_whom_login()
     return whom
 
 def pars_message(data):
+    # if len(data['messages']) > 1:
+    #     print('You have', len(data['messages']), 'posts', sep=' ')
+    # else:
+    #     print('You have', len(data['messages']), 'message', sep=' ')
     for mes in data['messages']:
         print(f"{mes['user_name']}: {mes['message']}\ntime: {pars_time(mes['data'])}\n")
-    input("Enter to return")
+    input("\nEnter to return")
     print('----------')
 
 def pars_time(times):
