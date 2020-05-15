@@ -3,14 +3,13 @@ import json
 import time
 import sys
 
-
-HOST = "http://127.0.0.2:5000/"
+HOST = "http://192.168.16.70:5555/"
 
 def get_config():
     try:
         file = open('config.conf')
     except IOError as e:
-        # print(u'не удалось открыть файл')
+        print(u'не удалось открыть файл')
         return {"host": HOST, "login": "_", "password": "_"}
     else:
         # print(u'делаем что-то с файлом')
@@ -32,7 +31,7 @@ class User:
     def get_password(self):
         password = get_config()['password']
         return password
-    
+
     def chenge_user(self, login, password):
         conf = get_config()
         conf['login'] = login
@@ -51,16 +50,16 @@ class RequestServ:
     def __init__(self):
         self.login = User().login
         self.password = User().password
+        print(get_config()['host'])
         self.host = get_config()['host']
         self.url_registration = self.host + r'api/v2/registration/'
-        self.url_is_login = self.host + r'/api/v2/is_login/'
+        self.url_is_login = self.host + r'api/v2/is_login/'
         self.url_authentication = self.host + f'api/v2/{self.login}/authentication/'
         self.url_is_whom_login = self.host + f'api/v2/{self.login}/is_whom_login/'
         self.url_write_message = self.host + f'api/v2/{self.login}/write_message/'
         self.url_read_message = self.host + f'api/v2/{self.login}/read_message/'
         self.url_check_message = self.host + f'api/v2/{self.login}/check_message/'
 
-    
     def registration(self, login, password) -> dict:
         data = {"login": login,
                 "password": password}
@@ -90,7 +89,7 @@ class RequestServ:
         data = {"password": self.password}
         status = requests.post(self.url_read_message, json=data)
         return status.json()
-    
+
     def check_message(self):
         data = {"password": self.password}
         status = requests.post(self.url_check_message, json=data)
@@ -103,7 +102,7 @@ class RequestServ:
 
 
 def main():
-    print ('Welcome to Terminal\n')
+    print('Welcome to Terminal\n')
     user = RequestServ()
     while not user.authentication()['status']:
         print(user.authentication()['status'])
@@ -118,22 +117,21 @@ def main():
         password = input("Password: ")
         User().chenge_user(login, password)
         user = RequestServ()
-
     menu_main(user)
 
 
 def menu_reg(user):
     while True:
         login = input("Enter login: ")
-        print(login)
-        if not user.is_login(login):
+        print(type(user.is_login(login)['status']))
+        if not user.is_login(login)['status']:
             password = input("Enter password: ")
             repeat_password = input("Repeat password: ")
             if password == repeat_password:
                 print(login)
                 User().chenge_user(login, password)
-                break    
-    status = user.registration(login, password)            
+                break
+    status = user.registration(login, password)
     if status['status']:
         print('You have successfully registered!')
 
@@ -148,7 +146,7 @@ def menu_main(user):
             print(f'(You have {data} message)')
         else:
             print(f'(You have {data} posts)')
-        
+
         answer = input('\n(enter "q" to exit): ')
         print('----------')
         if answer == '1':
@@ -162,31 +160,31 @@ def menu_main(user):
         if answer.lower() == 'q':
             break
 
+
 def whom_is(user):
     whom = input('\nWhom: ')
     while not user.is_whom_login(whom)['status']:
         print('User is not found!')
         whom = input('\nWhom: ')
-        # user.is_whom_login()
     return whom
 
+
 def pars_message(data):
-    # if len(data['messages']) > 1:
-    #     print('You have', len(data['messages']), 'posts', sep=' ')
-    # else:
-    #     print('You have', len(data['messages']), 'message', sep=' ')
     for mes in data['messages']:
         print(f"{mes['user_name']}: {mes['message']}\ntime: {pars_time(mes['data'])}\n")
     input("\nEnter to return")
     print('----------')
 
+
 def pars_time(times):
-    """ converts date from 1588759662.14039 to  May 13:07:42 2020 """
+    """ Converts date from 1588759662.14039
+        to  May 13:07:42 2020. """
     a = time.ctime(times)
     a = a.split(' ')
     del a[0], a[1]
     a[0], a[1] = a[1], a[0]
     a = ' '.join(a)
     return a
+
 
 main()
