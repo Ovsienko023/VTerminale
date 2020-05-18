@@ -10,9 +10,12 @@ app = Flask(__name__)
 
 @app.route('/api/v2/registration/', methods=['POST'])
 def registration():
-    data = request.json
-    login = data['login']
-    password = data['password']
+    try:
+        data = request.json
+        login = data['login']
+        password = data['password']
+    except KeyError:
+        return {"status": False, "info": "incorrect data"}
     user = Destributor(login, password)
     status = user.registration()
     return {"status": status}
@@ -20,11 +23,13 @@ def registration():
 
 @app.route('/api/v2/<login>/authentication/', methods=['POST'])
 def authentication(login):
-    """ Сравнивает логин и пароль пользователя с БД """
-    print(login)
-    data = request.json
-    print(data)
-    password = data['password']
+    try:
+        print(login)
+        data = request.json
+        print(data)
+        password = data['password']
+    except KeyError:
+        return {"status": False, "info": "incorrect data"}
     user = Destributor(login, password)
     if user.authentication:
         return {'status': True}
@@ -33,9 +38,12 @@ def authentication(login):
 
 @app.route('/api/v2/is_login/', methods=['POST'])
 def is_login():
-    data = request.json
-    print(data)
-    login = data['login']
+    try:
+        data = request.json
+        print(data)
+        login = data['login']
+    except KeyError:
+        return {"status": False, "info": "incorrect data"}
     user = Destributor(login, '-')
     status = user.is_user()
     return {"status": status}
