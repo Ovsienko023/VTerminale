@@ -50,7 +50,6 @@ class RequestServ:
     def __init__(self):
         self.login = User().login
         self.password = User().password
-        print(get_config()['host'])
         self.host = get_config()['host']
         self.url_registration = self.host + r'api/v2/registration/'
         self.url_is_login = self.host + r'api/v2/is_login/'
