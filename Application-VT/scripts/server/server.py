@@ -2,6 +2,7 @@ from flask import Flask, request
 from scripts.logic.utilities import AuthenticationError
 from scripts.logic.utilities import Destributor
 from scripts.logic.utilities import WrapperDB
+from scripts.logic.utilities import validator_time
 import json
 
 
@@ -51,9 +52,12 @@ def is_login():
 
 @app.route('/api/v2/<login>/is_whom_login/', methods=['POST'])
 def is_whom_login(login):
-    data = request.json
-    print(data)
-    password = data['password']
+    try:
+        data = request.json
+        print(data)
+        password = data['password']
+    except KeyError:
+        return {"status": False, "info": "incorrect data"}
     user = Destributor(login, password)
     if user.authentication:
         user = Destributor(login, password, data=data)
@@ -63,10 +67,16 @@ def is_whom_login(login):
 
 @app.route('/api/v2/<login>/write_message/', methods=['POST'])
 def write_message(login):
-    print(login)
-    data = request.json
-    print(data)
-    password = data['password']
+    try:
+        print(login)
+        data = request.json
+        print(data)
+        password = data['password']
+        validator_time(data)
+    except KeyError:
+        return {"status": False, "info": "incorrect json"}
+    except (OSError, TypeError):
+        return {"status": False, "info": "incorrect json (time)"}
     user = Destributor(login, password, data)
     if user.authentication:
         status = user.seve_message(data)
@@ -76,10 +86,13 @@ def write_message(login):
 
 @app.route('/api/v2/<login>/read_message/', methods=['POST'])
 def read_message(login):
-    print(login)
-    data = request.json
-    print(data)
-    password = data['password']
+    try:
+        print(login)
+        data = request.json
+        print(data)
+        password = data['password']
+    except KeyError:
+        return {"status": False, "info": "incorrect json"}
     user = Destributor(login, password)
     if user.authentication:
         print('!!!!!!!')
@@ -94,10 +107,13 @@ def read_message(login):
 
 @app.route('/api/v2/<login>/check_message/', methods=['POST'])
 def check_message(login):
-    print(login)
-    data = request.json
-    print(data, '!!!')
-    password = data['password']
+    try:
+        print(login)
+        data = request.json
+        print(data)
+        password = data['password']
+    except KeyError:
+        return {"status": False, "info": "incorrect json"}
     user = Destributor(login, password)
     if user.authentication:
         counter = user.check_message()

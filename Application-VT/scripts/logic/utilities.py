@@ -2,6 +2,7 @@ import pymongo
 import os
 import json
 import sys
+import time
 from bson.objectid import ObjectId
 OS = sys.platform
 
@@ -189,3 +190,7 @@ def use_admin_command():
 
 # CommandDB().dell_user('5ebd238e35381f6e216ed301')
 # CommandDB().get_all_users()
+
+def validator_time(sent):
+    times = sent['data']
+    time.ctime(times)
