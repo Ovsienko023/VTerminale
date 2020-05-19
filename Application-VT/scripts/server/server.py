@@ -95,7 +95,6 @@ def read_message(login):
         return {"status": False, "info": "incorrect json"}
     user = Destributor(login, password)
     if user.authentication:
-        print('!!!!!!!')
         status = user.read_message()
         print(status)
         if status['messages']:

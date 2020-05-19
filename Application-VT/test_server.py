@@ -1,29 +1,27 @@
 import unittest
-# import requests
 import json
 import sys
 from scripts.server.server import app
+from scripts.logic.utilities import CommandDB
+
 
 class TestApi(unittest.TestCase):
+    def test_registration_1(self):
+        """ create 2 new users """      
+        test_bob = {"login": "test_bob", "password": "123"}
+        test_kik = {"login": "test_kik", "password": "123"}
+        x = (test_bob, test_kik)
+        for sent in x:
+            with app.test_client() as client:
+                relult = client.post('api/v2/registration/', json=sent)
 
-    # def test_registration_1(self):
-    #     """ create 2 new users """      
-    #     test_bob = {"login": "test_bob", "password": "123"}
-    #     test_kik = {"login": "test_kik", "password": "123"}
-    #     x = (test_bob, test_kik)
-    #     for sent in x:
-    #         with app.test_client() as client:
-    #             relult = client.post('api/v2/registration/', json=sent)
-    #             with self.subTest(sent):
-    #                 self.assertEqual(relult.json, {'status': True})
-
-    # def test_registration_2(self):
-    #     """ json not correct  """
-    #     sent = {"logmn": "bob", "pakword": 123}
-    #     with app.test_client() as client:
-    #         relult = client.post('api/v2/registration/', json=sent)
-    #         self.assertEqual(relult.json, {'info': 'incorrect data',
-    #                                        'status': False})
+    def test_registration_2(self):
+        """ json not correct  """
+        sent = {"logmn": "bob", "pakword": 123}
+        with app.test_client() as client:
+            relult = client.post('api/v2/registration/', json=sent)
+            self.assertEqual(relult.json, {'info': 'incorrect data',
+                                           'status': False})
     
     def test_authentication_1(self):
         """ /authentication/ User is in the system """
@@ -53,6 +51,7 @@ class TestApi(unittest.TestCase):
             sent = {"login": 'test_kik'}
             relult = client.post('/api/v2/is_login/', json=sent)
             self.assertEqual(relult.json, {'status': True})
+            
     
     def test_is_login_2(self):
         """ /is_login/ If login is not in DB """
@@ -176,5 +175,7 @@ class TestApi(unittest.TestCase):
             self.assertEqual(relult.json,  {"status": False})
             
 
-if __name__ == '__main__':
+def test_server_run():
     unittest.main()
+
+test_server_run()

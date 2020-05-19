@@ -150,13 +150,18 @@ class Destributor:
 
 class CommandDB(WrapperDB):
     def dell_user(self, id):
-        self.coll_users.remove({'_id': ObjectId(id)})
+        status = self.coll_users.remove({'_id': ObjectId(id)})
         data = self.coll_users.find({})
         print(data)
+        return status
 
     def find_to_user_id(self, id):
         status = self.coll_users.find_one({"_id": ObjectId(id)})
         print(status)
+
+    def find_to_user_login(self, login):
+        status = self.coll_users.find_one({"user_name": login})
+        return status
 
     def find_to_message_id(self, id):
         status = self.coll_message.find_one({"_id": ObjectId(id)})
@@ -194,3 +199,6 @@ def use_admin_command():
 def validator_time(sent):
     times = sent['data']
     time.ctime(times)
+
+# CommandDB().dell_user('5ec28010414dbc790d0c34e8')
+# CommandDB().dell_user('5ec2863ecf361818e6236525')
