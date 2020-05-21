@@ -64,8 +64,9 @@ class WrapperDB:
             return True
         return False
 
-    def seve_message(self, doc):
-        status = self.coll_message.save(doc)
+    def seve_message(self, doc) -> bool:
+        # status = self.coll_message.save(doc)
+        status = self.coll_message.insert_one(doc)
         if status:
             return True
         return False

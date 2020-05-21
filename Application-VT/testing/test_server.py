@@ -1,6 +1,7 @@
 import unittest
 import json
 import sys
+sys.path[0] = sys.path[0][:-8]
 from scripts.server.server import app
 from scripts.logic.utilities import CommandDB
 
