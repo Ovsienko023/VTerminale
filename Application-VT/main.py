@@ -10,7 +10,7 @@ def main():
 
 def conf_server() -> tuple:
     """ returns tuple(host, server) from the file: config.txt """
-    with open('Application-VT/config.txt') as config:
+    with open('config.txt') as config:
         json_str = config.read()
         json_str = json.loads(json_str)
 

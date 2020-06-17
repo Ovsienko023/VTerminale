@@ -1,3 +1,7 @@
+import sys  # sys нужен для передачи argv в QApplication
+from PyQt5 import QtWidgets
+import chat_v1
+
 import requests
 import json
 import time
@@ -7,14 +11,8 @@ import os
 HOST = "http://192.168.16.70:5555/"
 
 def get_config():
-    # try:
-    #     file = open('config.conf')
-    # except IOError as e:
-    #     print(u'не удалось открыть файл')
-    #     return {"host": HOST, "login": "_", "password": "_"}
-    # else:
-        # print(u'делаем что-то с файлом')
-    path = os.getcwd() + "\config.conf"
+    
+    path = os.getcwd() + "\config.json"
     print(path)
     with open(path)as r:
         data = r.read()
@@ -45,8 +43,8 @@ class User:
 
 
 class Message:
-    def __init__(self):
-        self.message = input("Enter message: ")
+    def __init__(self, message):
+        self.message = message
 
 
 class RequestServ:
@@ -103,90 +101,61 @@ class RequestServ:
         return status.json()
 
 
+
+
+
+class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.pushButton.clicked.connect(self.send_message)
+        self.pushButton_2.clicked.connect(self.read_message)
+        
+    def send_message(self):
+        print('Нажатие на кнопку Send')
+        text_message = self.writeMessage.toPlainText()
+        whom = self.writeMessage_2.toPlainText()
+        status = RequestServ().write_message(whom, text_message)
+        print(status)
+        # self.viewMessage.append(status.content.decode())
+    
+    def read_message(self):
+        print('Чтение сообщения')
+
+        data = RequestServ().read_message()
+        print(type(data), data)
+        if data['status']:   
+            for mes in data['messages']:
+                print(f"{mes['user_name']}: {mes['message']}\ntime: {self.pars_time(mes['data'])}\n")
+                mess = f"{mes['user_name']}: {mes['message']}\ntime: {self.pars_time(mes['data'])}\n"
+                self.viewMessage.append(mess)
+
+# def pars_message(data):
+#     for mes in data['messages']:
+#         print(f"{mes['user_name']}: {mes['message']}\ntime: {pars_time(mes['data'])}\n")
+#         mess = f"{mes['user_name']}: {mes['message']}\ntime: {pars_time(mes['data'])}\n"
+#         self.viewMessage.append(mess)
+
+
+    def pars_time(self, times):
+        """ Converts date from 1588759662.14039
+            to  May 13:07:42 2020. """
+        a = time.ctime(times)
+        a = a.split(' ')
+        del a[0], a[1]
+        a[0], a[1] = a[1], a[0]
+        a = ' '.join(a)
+        return a
+
+
+
+
+
 def main():
-    print('Welcome to Terminal\n')
-    user = RequestServ()
-    while not user.authentication()['status']:
-        print(user.authentication()['status'])
-        print('\nTo register, press "0"')
-        print('To continue without registration, press "Enter"\n')
-        command = input()
-        if command == '0':
-            print('Registration')
-            menu_reg(user)
+    app = QtWidgets.QApplication(sys.argv)
+    window = Chat()
+    window.show()
+    app.exec_()
 
-        login = input("Login: ")
-        password = input("Password: ")
-        User().chenge_user(login, password)
-        user = RequestServ()
-    menu_main(user)
-
-
-def menu_reg(user):
-    while True:
-        login = input("Enter login: ")
-        print(type(user.is_login(login)['status']))
-        if not user.is_login(login)['status']:
-            password = input("Enter password: ")
-            repeat_password = input("Repeat password: ")
-            if password == repeat_password:
-                print(login)
-                User().chenge_user(login, password)
-                break
-    status = user.registration(login, password)
-    if status['status']:
-        print('You have successfully registered!')
-
-
-def menu_main(user):
-    while True:
-        print('\nSelect option: \nTo write message press "1"\nTo check messages press "2"')
-        data = user.check_message()['counter']
-        if data == 0:
-            print(f'(No messages)')
-        elif data == 1:
-            print(f'(You have {data} message)')
-        else:
-            print(f'(You have {data} posts)')
-
-        answer = input('\n(enter "q" to exit): ')
-        print('----------')
-        if answer == '1':
-            whom = whom_is(user)
-            message = Message().message
-            status = user.write_message(whom, message)
-            print(status)
-        if answer == '2':
-            data = user.read_message()
-            pars_message(data)
-        if answer.lower() == 'q':
-            break
-
-
-def whom_is(user):
-    whom = input('\nWhom: ')
-    while not user.is_whom_login(whom)['status']:
-        print('User is not found!')
-        whom = input('\nWhom: ')
-    return whom
-
-
-def pars_message(data):
-    for mes in data['messages']:
-        print(f"{mes['user_name']}: {mes['message']}\ntime: {pars_time(mes['data'])}\n")
-    input("\nEnter to return")
-    print('----------')
-
-
-def pars_time(times):
-    """ Converts date from 1588759662.14039
-        to  May 13:07:42 2020. """
-    a = time.ctime(times)
-    a = a.split(' ')
-    del a[0], a[1]
-    a[0], a[1] = a[1], a[0]
-    a = ' '.join(a)
-    return a
-
-
-main()
+if __name__ == '__main__':
+    main()
