@@ -188,7 +188,7 @@ class CommandDB(WrapperDB):
 
 
 def use_admin_command():
-    CommandDB().create_new_user('Marli', 'c2br32r3')
+    CommandDB().create_new_user('Sasha', 'Rukina')
     CommandDB().dell_user('5ebbc1a616c8491443fd40f1')
     CommandDB().get_all_users()
     CommandDB().message_update('5ebbff04e49793d4574b7c47')
