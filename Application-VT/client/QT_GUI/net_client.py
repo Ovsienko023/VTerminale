@@ -11,8 +11,6 @@ import login_in
 
 HOST = "http://192.168.16.70:5555/"
 
-login = ''
-password = ''
 
 def get_config():
     path = os.getcwd() + "\config.json"
@@ -37,11 +35,13 @@ class User:
         return password
 
     def chenge_user(self, login, password):
+        print('!!!!!!!!!!')
         conf = get_config()
         conf['login'] = login
         conf['password'] = password
-        with open('config.conf', 'w')as w:
+        with open('config.json', 'w') as w:
             json_dict = json.dumps(conf)
+            print(json_dict)
             w.write(json_dict)
 
 
@@ -51,38 +51,31 @@ class Message:
 
 
 class RequestServ:
-    def __init__(self, login, password):
-        self.login = login#User().login
-        self.password = password#User().password
+    def __init__(self):
+        self.login = User().login
+        self.password = User().password
         self.host = get_config()['host']
     
     def url_registration(self):
         return self.host + r'api/v2/registration/'
-        # self.url_registration = self.host + r'api/v2/registration/'
-    
+
     def url_is_login(self):
         return self.host + r'api/v2/is_login/'
-        # self.url_is_login = self.host + r'api/v2/is_login/'
-    
+
     def url_authentication(self):
         return self.host + f'api/v2/{self.login}/authentication/'
-        # self.url_authentication = self.host + f'api/v2/{self.login}/authentication/'
-    
+
     def url_is_whom_login(self):
         return self.host + f'api/v2/{self.login}/is_whom_login/'
-        # self.url_is_whom_login = self.host + f'api/v2/{self.login}/is_whom_login/'
-    
+
     def url_write_message(self):
         return self.host + f'api/v2/{self.login}/write_message/'
-        # self.url_write_message = self.host + f'api/v2/{self.login}/write_message/'
-    
+
     def url_read_message(self):
         return self.host + f'api/v2/{self.login}/read_message/'
-        # self.url_read_message = self.host + f'api/v2/{self.login}/read_message/'
 
     def url_check_message(self):
         return self.host + f'api/v2/{self.login}/check_message/'
-        # self.url_check_message = self.host + f'api/v2/{self.login}/check_message/'
 
     def registration(self, login, password) -> dict:
         data = {"login": login,
@@ -147,7 +140,6 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
     
     def read_message(self):
         print('Чтение сообщения')
-
         data = RequestServ().read_message()
         print(type(data), data)
         if data['status']:   
@@ -167,7 +159,6 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         return a
 
 
-
 class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
     def __init__(self):
         super().__init__()
@@ -176,18 +167,19 @@ class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
         
     def log_in(self):
         print('Button Login in')
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         login = self.LoginLineEdit.text()
         password = self.passwordLineEdit.text()
         user = RequestServ()
-        
+        user.login = login
+        user.password = password
         status = user.authentication()
 
         print(login, password, status)
         if status['status']:
+            User().chenge_user(login, password)
             self.close()
         
-
+    
 
 
 
