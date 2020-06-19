@@ -120,3 +120,19 @@ def check_message(login):
                "counter": counter}
     return {"status": False,
             "counter": 0}
+
+
+@app.route('/api/v2/<login>/get_friends/', methods=['POST'])
+def get_friends(login):
+    try:
+        data = request.json
+        print(data)
+        password = data['password']
+    except KeyError:
+        return {"status": False, "info": "incorrect data"}
+    user = Destributor(login, password)
+    if user.authentication:
+        user = Destributor(login, password, data=data)
+        lst_friends = user.get_friends()
+        return {"status": True, "friends": lst_friends}
+    return {"status": False}

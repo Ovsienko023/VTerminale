@@ -13,7 +13,7 @@ HOST = "http://192.168.16.70:5555/"
 
 
 def get_config():
-    path = os.getcwd() + "\config.json"
+    path = os.getcwd() + "/config.json"
     print(path)
     with open(path)as r:
         data = r.read()
@@ -76,6 +76,9 @@ class RequestServ:
 
     def url_check_message(self):
         return self.host + f'api/v2/{self.login}/check_message/'
+    
+    def url_get_friends(self):
+        return self.host + f'/api/v2/{self.login}/get_friends/'
 
     def registration(self, login, password) -> dict:
         data = {"login": login,
@@ -117,13 +120,20 @@ class RequestServ:
         data = {"login": login}
         status = requests.post(self.url_is_login(), json=data)
         return status.json()
+    
+    def get_friends(self):
+        data = {"password": self.password}
+        status = requests.post(self.url_get_friends(), json=data)
+        return status.json()
 
 
 class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        users = ['', 'bob', 'kik', 'Sani0525', 'Sasha']
+        users = list()  # create list friends
+        users.append('')
+        users = users + RequestServ().get_friends()['friends']
         self.comboBox.addItems(users)
         self.pushButton.clicked.connect(self.send_message)
         self.pushButton_2.clicked.connect(self.read_message)

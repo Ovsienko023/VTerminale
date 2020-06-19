@@ -94,6 +94,10 @@ class WrapperDB:
             return True
         return False
 
+    def get_friends(self, login):
+        doc_user = self.coll_users.find_one({"user_name": login})
+        return doc_user['friends']
+
 
 class Destributor:
     def __init__(self, login, password, data=None):
@@ -164,6 +168,10 @@ class Destributor:
     def is_user(self):
         status = WrapperDB().is_user(self.user.login)
         return status
+    
+    def get_friends(self):
+        friends = WrapperDB().get_friends(self.user.login)
+        return friends
 
 
 class CommandDB(WrapperDB):
