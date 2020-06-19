@@ -1,16 +1,18 @@
 import json
 from scripts.server.server import app
 import sys
+import os
 
 
 def main():
-    print(conf_server())
     app.run(*conf_server())
 
 
 def conf_server() -> tuple:
     """ returns tuple(host, server) from the file: config.txt """
-    with open('config.txt') as config:
+    print(sys.path)
+    path = os.getcwd() + "/Application-VT/config.json"
+    with open(path) as config:
         json_str = config.read()
         json_str = json.loads(json_str)
 
@@ -22,3 +24,4 @@ def conf_server() -> tuple:
 if __name__ == "__main__":
         main()
 
+# ಠ_ಠ = "хммм"

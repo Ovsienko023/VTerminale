@@ -18,7 +18,7 @@ class ConnectDB():
         self.db = self.conn.mydb
 
     def config_app(self):
-        path = os.getcwd() + "\config.txt"
+        path = os.getcwd() + "/Application-VT/config.json"
         with open(path) as config:
             json_str = config.read()
             return json.loads(json_str)
@@ -194,7 +194,7 @@ class CommandDB(WrapperDB):
         print(status)
 
     def create_new_user(self, login, password):
-        doc = {"user_name": login, "password": password}
+        doc = {"user_name": login, "password": password, "friends": []}
         status = self.coll_users.save(doc)
         print(status)
 
@@ -220,10 +220,11 @@ def use_admin_command():
     CommandDB().message_update('5ebbff04e49793d4574b7c47')
     CommandDB().get_all_message()
 
-# CommandDB().dell_user('5ebd238e35381f6e216ed301')
+# CommandDB().dell_user('5eed142b14b1de16befdec5b')
 # CommandDB().find_to_message_id('5ebbb204bc47cb21fa3db29d')
-# CommandDB().get_all_users()
 
+# CommandDB().create_new_user('kop', '123')
+# CommandDB().get_all_users()
 
 
 def validator_time(sent):
