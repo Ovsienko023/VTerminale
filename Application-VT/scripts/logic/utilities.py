@@ -51,8 +51,8 @@ class WrapperDB:
         return False
 
     def registration(self, login, password) -> bool:
-        doc = {"user_name": login, "password": password}
-        if self.coll_users.save(doc):
+        doc = {"user_name": login, "password": password, "friends": []}
+        if self.coll_users.insert_one(doc):
             return True
         return False
 
@@ -65,7 +65,6 @@ class WrapperDB:
         return False
 
     def seve_message(self, doc) -> bool:
-        # status = self.coll_message.save(doc)
         status = self.coll_message.insert_one(doc)
         if status:
             return True
@@ -79,6 +78,21 @@ class WrapperDB:
     def update_write_message(self, id):
         self.coll_message.update({'_id': ObjectId(id)},
                                  {'$set': {"status": "view"}})
+
+    def add_friend(self, login, user_friend) -> bool:
+        user = self.coll_users.find_one({"user_name": login})
+        user['friends'].append(user_friend)
+        friend = user['friends']
+        status = self.coll_users.update_one({'user_name': login}, {'$set': {"friends": friend}})
+        if isinstance(status, list):
+            return True
+        return False
+    
+    def is_friend(self, login, friend):
+        doc_user = self.coll_users.find_one({"user_name": login})
+        if friend in doc_user['friends']:
+            return True
+        return False
 
 
 class Destributor:
@@ -106,6 +120,9 @@ class Destributor:
             doc["message"] = self.data["message"]
             doc["status"] = "not_view"
             status = WrapperDB().seve_message(doc)
+            login = self.user.login
+            if not WrapperDB().is_friend(login, self.data["whom"]):
+                WrapperDB().add_friend(login, self.data["whom"])
             return status
         return False
 
@@ -186,6 +203,7 @@ class CommandDB(WrapperDB):
         for mess in messages:
             print(mess)
 
+    
 
 def use_admin_command():
     CommandDB().create_new_user('Sasha', 'Rukina')
@@ -195,7 +213,10 @@ def use_admin_command():
     CommandDB().get_all_message()
 
 # CommandDB().dell_user('5ebd238e35381f6e216ed301')
+# CommandDB().find_to_message_id('5ebbb204bc47cb21fa3db29d')
 # CommandDB().get_all_users()
+
+
 
 def validator_time(sent):
     times = sent['data']
