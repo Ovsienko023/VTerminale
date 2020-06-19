@@ -1,5 +1,6 @@
 import sys
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
+# from PyQt5.QtGui import QIcon
 import chat_v1
 import requests
 import json
@@ -130,6 +131,7 @@ class RequestServ:
 class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setupUi(self)
         users = list()  # create list friends
         users.append('')
@@ -137,6 +139,8 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         self.comboBox.addItems(users)
         self.pushButton.clicked.connect(self.send_message)
         self.pushButton_2.clicked.connect(self.read_message)
+        self.pushButton_3.clicked.connect(self.find_friends)
+        
         
     def send_message(self):
         print('Нажатие на кнопку Send')
@@ -168,10 +172,25 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         a = ' '.join(a)
         return a
 
+    def find_friends(self):
+        self.friend = self.lineEdit.text()
+        print(self.friend)
+        if RequestServ().is_login(self.friend)['status']:
+            self.textBrowser.setText(f'User {self.friend}, found! Add as Friend?')
+            self.pushButton_4.clicked.connect(self.add_friend)
+            self.textBrowser.setText(f'User {self.friend}, added!')
+        else:
+            self.textBrowser.setText(f'User {self.friend}, not found! Enter the correct login.')
+
+    def add_friend(self):
+        message = "Hi, I added you as a friend!"
+        RequestServ().write_message(self.friend, message)
+        self.comboBox.addItems([self.friend])
 
 class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setupUi(self)
         self.LoginInPushButton.clicked.connect(self.log_in)
         

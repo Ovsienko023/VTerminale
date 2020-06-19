@@ -36,6 +36,7 @@ class Ui_MainWindow(object):
         self.label_2.setObjectName("label_2")
         self.comboBox = QtWidgets.QComboBox(self.Tab_1)
         self.comboBox.setGeometry(QtCore.QRect(10, 40, 221, 31))
+        self.comboBox.setAcceptDrops(False)
         self.comboBox.setObjectName("comboBox")
         self.tabWidget.addTab(self.Tab_1, "")
         self.tab_2 = QtWidgets.QWidget()
@@ -47,6 +48,32 @@ class Ui_MainWindow(object):
         self.pushButton_2.setGeometry(QtCore.QRect(350, 90, 91, 71))
         self.pushButton_2.setObjectName("pushButton_2")
         self.tabWidget.addTab(self.tab_2, "")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.pushButton_3 = QtWidgets.QPushButton(self.tab)
+        self.pushButton_3.setGeometry(QtCore.QRect(30, 90, 75, 23))
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.textBrowser = QtWidgets.QTextBrowser(self.tab)
+        self.textBrowser.setGeometry(QtCore.QRect(30, 180, 441, 31))
+        self.textBrowser.setObjectName("textBrowser")
+        self.lineEdit = QtWidgets.QLineEdit(self.tab)
+        self.lineEdit.setGeometry(QtCore.QRect(30, 50, 141, 20))
+        self.lineEdit.setObjectName("lineEdit")
+        self.label_3 = QtWidgets.QLabel(self.tab)
+        self.label_3.setGeometry(QtCore.QRect(30, 30, 61, 16))
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self.tab)
+        self.label_4.setGeometry(QtCore.QRect(30, 160, 47, 13))
+        self.label_4.setObjectName("label_4")
+        self.line = QtWidgets.QFrame(self.tab)
+        self.line.setGeometry(QtCore.QRect(0, 119, 521, 41))
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.pushButton_4 = QtWidgets.QPushButton(self.tab)
+        self.pushButton_4.setGeometry(QtCore.QRect(30, 230, 75, 23))
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.tabWidget.addTab(self.tab, "")
         self.verticalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -54,7 +81,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -63,9 +90,19 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Send"))
         self.label.setText(_translate("MainWindow", "Enter Message:"))
         self.label_2.setText(_translate("MainWindow", "Whom:"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Tab_1), _translate("MainWindow", "Tab 1"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Tab_1), _translate("MainWindow", "Send message"))
         self.pushButton_2.setText(_translate("MainWindow", "Check Message"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Check message"))
+        self.pushButton_3.setText(_translate("MainWindow", "Find"))
+        self.textBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.label_3.setText(_translate("MainWindow", "Enter login:"))
+        self.label_4.setText(_translate("MainWindow", "Status:"))
+        self.pushButton_4.setText(_translate("MainWindow", "Add friend"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Find friends"))
 
 
 if __name__ == "__main__":
