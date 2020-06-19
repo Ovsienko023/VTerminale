@@ -1,6 +1,5 @@
 import sys
 from PyQt5 import QtWidgets, QtGui
-# from PyQt5.QtGui import QIcon
 import chat_v1
 import requests
 import json
@@ -187,6 +186,7 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         RequestServ().write_message(self.friend, message)
         self.comboBox.addItems([self.friend])
 
+
 class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
     def __init__(self):
         super().__init__()
@@ -207,10 +207,6 @@ class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
         if status['status']:
             User().chenge_user(login, password)
             self.close()
-        
-    
-
-
 
 
 def widget_login():
