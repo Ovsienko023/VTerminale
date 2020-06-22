@@ -7,13 +7,6 @@ import os
 HOST = "http://192.168.16.70:5555/"
 
 def get_config():
-    # try:
-    #     file = open('config.conf')
-    # except IOError as e:
-    #     print(u'не удалось открыть файл')
-    #     return {"host": HOST, "login": "_", "password": "_"}
-    # else:
-        # print(u'делаем что-то с файлом')
     path = os.getcwd() + "\config.conf"
     print(path)
     with open(path)as r:

@@ -1,0 +1,6 @@
+{
+    "server":{"host": "127.0.0.1", 
+                "port": "5555"}, 
+    "Data_Base":{"host": "mongodb://127.0.0.1", 
+                    "port": "27017"}
+}

@@ -18,7 +18,7 @@ class ConnectDB():
         self.db = self.conn.mydb
 
     def config_app(self):
-        path = os.getcwd() + "/Application-VT/config.json"
+        path = os.getcwd() + "\config.json"
         with open(path) as config:
             json_str = config.read()
             return json.loads(json_str)
