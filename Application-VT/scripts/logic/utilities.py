@@ -172,6 +172,10 @@ class Destributor:
     def get_friends(self):
         friends = WrapperDB().get_friends(self.user.login)
         return friends
+    
+    def is_friend(self, login, friend):
+        status = WrapperDB().is_friend(self.user.login, friend)
+        return status
 
 
 class CommandDB(WrapperDB):
@@ -224,7 +228,7 @@ def use_admin_command():
 # CommandDB().find_to_message_id('5ebbb204bc47cb21fa3db29d')
 
 # CommandDB().create_new_user('kop', '123')
-# CommandDB().get_all_users()
+CommandDB().get_all_users()
 
 
 def validator_time(sent):

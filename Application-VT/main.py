@@ -10,7 +10,6 @@ def main():
 
 def conf_server() -> tuple:
     """ returns tuple(host, server) from the file: config.txt """
-    print(sys.path)
     path = os.getcwd() + "\config.json"
     with open(path) as config:
         json_str = config.read()

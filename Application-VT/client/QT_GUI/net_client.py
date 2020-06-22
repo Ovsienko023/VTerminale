@@ -79,6 +79,9 @@ class RequestServ:
     
     def url_get_friends(self):
         return self.host + f'/api/v2/{self.login}/get_friends/'
+    
+    def url_is_friend(self):
+        return self.host + f'/api/v2/{self.login}/is_friend/'
 
     def registration(self, login, password) -> dict:
         data = {"login": login,
@@ -126,6 +129,12 @@ class RequestServ:
         status = requests.post(self.url_get_friends(), json=data)
         return status.json()
 
+    def is_friend(self, friend):
+        data = {"password": self.password,
+                "friend": friend}
+        status = requests.post(self.url_is_friend(), json=data)
+        return status.json()
+
 
 class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
     def __init__(self):
@@ -158,7 +167,7 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         if data['status']:   
             for mes in data['messages']:
                 print(f"{mes['user_name']}: {mes['message']}\ntime: {self.pars_time(mes['data'])}\n")
-                mess = f"{mes['user_name']}: {mes['message']}\ntime: {self.pars_time(mes['data'])}\n"
+                mess = f"{mes['user_name']}: {mes['message']}\ntime: {self.pars_time(mes['data'])}\n\n"
                 self.viewMessage.append(mess)
 
     def pars_time(self, times):
@@ -182,9 +191,10 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
             self.textBrowser.setText(f'User {self.friend}, not found! Enter the correct login.')
 
     def add_friend(self):
-        message = "Hi, I added you as a friend!"
-        RequestServ().write_message(self.friend, message)
-        self.comboBox.addItems([self.friend])
+        if not RequestServ().is_friend(self.friend)['status']:
+            message = "Hi, I added you as a friend!"
+            RequestServ().write_message(self.friend, message)
+            self.comboBox.addItems([self.friend])
 
 
 class Login(QtWidgets.QMainWindow, login_in.Ui_Form):

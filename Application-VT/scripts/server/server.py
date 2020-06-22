@@ -136,3 +136,20 @@ def get_friends(login):
         lst_friends = user.get_friends()
         return {"status": True, "friends": lst_friends}
     return {"status": False}
+
+
+@app.route('/api/v2/<login>/is_friend/', methods=['POST'])
+def is_friend(login):
+    try:
+        data = request.json
+        print(data)
+        password = data['password']
+        friend = data['friend']
+    except KeyError:
+        return {"status": False, "info": "incorrect data"}
+    user = Destributor(login, password)
+    if user.authentication:
+        user = Destributor(login, password, data=data)
+        status = user.is_friend(login, friend)
+        return {"status": status}
+    return {"status": False}
