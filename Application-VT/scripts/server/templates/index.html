@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Vterminale</title>
+  <link rel="icon" type="image/png" href="/static/icon.png"> 
+  <link rel="stylesheet" type="text/css" href="{{ url_for( 'static', filename='style.css', v=1)}}">
+  <!-- <script src="send_post.js"></script> -->
+  <!-- <script src="{{ url_for('static', filename='js/send_post.js') }}"></script> -->
+</head>
+<body>
+  <article class="article article_bluebg article_second">
+    <h2 class="white">Vterminale</h2>
+    <p class="white", align="center">To register, enter your username and password</p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <form class="form" name="form">
+      <input type="email" class="form_input" placeholder="Login" id="login_web">
+      <input type="password" class="form_input" placeholder="Password" id="password_web">
+      <button class="form_button" type="button" name="send" id="elem">Sing Up</button>
+      <script src="{{ url_for('static', filename='js/send_post.js') }}"></script>
+    </form>
+  </article>
+</body>
+</html>

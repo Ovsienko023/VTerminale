@@ -35,7 +35,6 @@ class User:
         return password
 
     def chenge_user(self, login, password):
-        print('!!!!!!!!!!')
         conf = get_config()
         conf['login'] = login
         conf['password'] = password

@@ -1,4 +1,6 @@
 from flask import Flask, request
+from flask import render_template
+from flask_cors import CORS
 from scripts.logic.utilities import AuthenticationError
 from scripts.logic.utilities import Destributor
 from scripts.logic.utilities import WrapperDB
@@ -7,6 +9,7 @@ import json
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/api/v2/registration/', methods=['POST'])
@@ -153,3 +156,17 @@ def is_friend(login):
         status = user.is_friend(login, friend)
         return {"status": status}
     return {"status": False}
+
+
+@app.route('/api/v2/web_registration/', methods=['GET', 'POST'])
+def web_registration():
+    print(request.json)
+    # try:
+    #     data = request.json
+    #     login = data['login']
+    #     password = data['password']
+    # except KeyError:
+    #     return {"status": False, "info": "incorrect data"}
+    # user = Destributor(login, password)
+    # status = user.registration()
+    return render_template('index.html')
