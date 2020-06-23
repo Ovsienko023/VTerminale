@@ -7,17 +7,19 @@ import time
 import sys
 import os
 import login_in
+import webbrowser
 
-
+localhost = "http://127.0.0.1:5555/"
 HOST = "http://192.168.16.70:5555/"
 
 
 def get_config():
-    path = os.getcwd() + "/config.json"
-    print(path)
-    with open(path)as r:
-        data = r.read()
-        conf_dict = json.loads(data)
+    # path = os.getcwd() + "/config.json"
+    # print(path)
+    # with open(path)as r:
+    #     data = r.read()
+    #     conf_dict = json.loads(data)
+    conf_dict = {"host": "http://192.168.16.70:5555/", "login": "kik", "password": "123"}
     return conf_dict
 
 
@@ -202,6 +204,7 @@ class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setupUi(self)
         self.LoginInPushButton.clicked.connect(self.log_in)
+        self.RegistrCommandLinkButton.clicked.connect(self.getlink)
         
     def log_in(self):
         print('Button Login in')
@@ -217,6 +220,10 @@ class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
             User().chenge_user(login, password)
             self.close()
 
+    def getlink(self):
+        host = get_config()['host']
+        url = host + '/api/v2/web_registration/'
+        webbrowser.open_new(url)
 
 def widget_login():
     app = QtWidgets.QApplication(sys.argv)

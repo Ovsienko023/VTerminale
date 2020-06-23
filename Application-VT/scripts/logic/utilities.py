@@ -215,6 +215,10 @@ class CommandDB(WrapperDB):
         for mess in messages:
             print(mess)
 
+
+def validator_time(sent):
+    times = sent['data']
+    time.ctime(times)
     
 
 def use_admin_command():
@@ -224,41 +228,12 @@ def use_admin_command():
     CommandDB().message_update('5ebbff04e49793d4574b7c47')
     CommandDB().get_all_message()
 
+
 # CommandDB().dell_user('5eed142b14b1de16befdec5b')
 # CommandDB().find_to_message_id('5ebbb204bc47cb21fa3db29d')
 
 # CommandDB().create_new_user('kop', '123')
-CommandDB().get_all_users()
-
-
-def validator_time(sent):
-    times = sent['data']
-    time.ctime(times)
+# CommandDB().get_all_users()
 
 # CommandDB().dell_user('5ec28010414dbc790d0c34e8')
 # CommandDB().dell_user('5ec2863ecf361818e6236525')
-
-
-# import smtplib
-# from email.mime.multipart import MIMEMultipart
-# from email.mime.text import MIMEText
-
-# # VterminaleBot@gmail.com
-
-# addr_from = "vterminalebot@gmail.com"                 # Адресат
-# addr_to   = "ovsienko023@gmail.com"                   # Получатель
-# password  = "Feniks68471325"                          # Пароль
-
-# msg = MIMEMultipart()                               # Создаем сообщение
-# msg['From']    = addr_from                          # Адресат
-# msg['To']      = addr_to                            # Получатель
-# msg['Subject'] = 'Тема сообщения'                   # Тема сообщения
-
-# body = "Текст сообщения"
-# msg.attach(MIMEText(body, 'plain'))                 # Добавляем в сообщение текст
-
-# server = smtplib.SMTP_SSL('imap.gmail.com', 465)    # Создаем объект SMTP
-# #server.starttls()                                  # Начинаем шифрованный обмен по TLS
-# server.login(addr_from, password)                   # Получаем доступ
-# server.send_message(msg)                            # Отправляем сообщение
-# server.quit()  
