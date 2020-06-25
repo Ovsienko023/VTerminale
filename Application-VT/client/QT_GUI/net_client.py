@@ -1,26 +1,35 @@
-import sys
 from PyQt5 import QtWidgets, QtGui
-import chat_v1
+import webbrowser
+import login_in
 import requests
+import chat_v1
 import json
 import time
 import sys
 import os
-import login_in
-import webbrowser
+
 
 localhost = "http://127.0.0.1:5555/"
 HOST = "http://192.168.16.70:5555/"
 
 
 def get_config():
-    # path = os.getcwd() + "/config.json"
-    # print(path)
-    # with open(path)as r:
-    #     data = r.read()
-    #     conf_dict = json.loads(data)
-    conf_dict = {"host": "http://192.168.16.70:5555/", "login": "kik", "password": "123"}
+    if is_file():
+        path = os.getcwd() + "\config.json"
+        print(path)
+        with open(path)as r:
+            data = r.read()
+            conf_dict = json.loads(data)
+    else:
+        conf_dict = {"host": HOST, "login": "_", "password": "_"}
     return conf_dict
+
+
+def is_file():
+    """ return True, if file available else: return False. """
+    path = os.getcwd()
+    storage_path = os.path.join(path, 'config.json')
+    return os.path.exists(storage_path)
 
 
 class User:
@@ -238,6 +247,7 @@ def main():
     window = Chat()
     window.show()
     app.exec_()
+
 
 if __name__ == '__main__':
     main()

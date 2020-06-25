@@ -8,7 +8,7 @@ elem.onclick = function() {
     }
     var json = JSON.stringify(data);
     var request = new XMLHttpRequest();
-    request.open("POST", "http://127.0.0.1:5555/api/v2/registration/");
+    request.open("POST", "http://192.168.16.70:5555/api/v2/registration/");
     request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
     request.send(json);
     request.onload = () => console.log(request.response)
