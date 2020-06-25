@@ -151,25 +151,33 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         super().__init__()
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setupUi(self)
-        users = list()  # create list friends
-        users.append('')
-        users = users + RequestServ().get_friends()['friends']
-        self.comboBox.addItems(users)
+        # users = list()  # create list friends
+        # users.append('')
+        # users = users + RequestServ().get_friends()['friends']
+        # self.comboBox.addItems(users)
+        self.add_users_in_list_widget()
         self.pushButton.clicked.connect(self.send_message)
         self.pushButton_2.clicked.connect(self.read_message)
         self.pushButton_3.clicked.connect(self.find_friends)
         
-        
+
+    def add_users_in_list_widget(self):
+        users = RequestServ().get_friends()['friends']
+        for user in users:
+            self.listWidget.addItem(user)
+
     def send_message(self):
         print('Нажатие на кнопку Send')
         text_message = self.writeMessage.toPlainText()
-        num_lst = self.comboBox.view().currentIndex().row()
-        whom = self.comboBox.itemText(num_lst)
+        friend = self.listWidget.currentItem().text()
+        # num_lst = self.comboBox.view().currentIndex().row()
+        # whom = self.comboBox.itemText(num_lst)
 
-        status = RequestServ().write_message(whom, text_message)
+        status = RequestServ().write_message(friend, text_message)
         print(status)
+        self.writeMessage.clear()
         # self.viewMessage.append(status.content.decode())
-    
+
     def read_message(self):
         print('Чтение сообщения')
         data = RequestServ().read_message()
@@ -204,7 +212,8 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         if not RequestServ().is_friend(self.friend)['status']:
             message = "Hi, I added you as a friend!"
             RequestServ().write_message(self.friend, message)
-            self.comboBox.addItems([self.friend])
+            # self.comboBox.addItems([self.friend])
+            self.listWidget.addItem(self.friend)
 
 
 class Login(QtWidgets.QMainWindow, login_in.Ui_Form):

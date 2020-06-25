@@ -127,6 +127,7 @@ def check_message(login):
 
 @app.route('/api/v2/<login>/get_friends/', methods=['POST'])
 def get_friends(login):
+    print('get_friends')
     try:
         data = request.json
         print(data)
