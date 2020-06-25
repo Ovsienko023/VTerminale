@@ -6,3 +6,7 @@
   4. pyuic5 -x file_name.ui -o file_name.py
 ## In .exe
   pyinstaller .\net_client.py --onefile --noconsole
+
+
+## temp_path
+  C:\Users\Ovsienko\AppData\Local\Temp

@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui
 import webbrowser
 import login_in
 import requests
+import tempfile
 import chat_v1
 import json
 import time
@@ -9,27 +10,35 @@ import sys
 import os
 
 
-localhost = "http://127.0.0.1:5555/"
+LOCALHOST = "http://127.0.0.1:5555/"
 HOST = "http://192.168.16.70:5555/"
 
 
-def get_config():
-    if is_file():
-        path = os.getcwd() + "\config.json"
-        print(path)
-        with open(path)as r:
-            data = r.read()
-            conf_dict = json.loads(data)
-    else:
-        conf_dict = {"host": HOST, "login": "_", "password": "_"}
-    return conf_dict
+def cread_file_data():
+    if not is_file():
+        config_path = os.path.join(tempfile.gettempdir(), 'config.json')
+        with open(config_path, 'w') as writer:
+            con = {"host": LOCALHOST, "login": "_", "password": "_"}
+            json_dict = json.dumps(con) 
+            writer.write(json_dict)
+    return is_file()
 
 
 def is_file():
     """ return True, if file available else: return False. """
-    path = os.getcwd()
-    storage_path = os.path.join(path, 'config.json')
-    return os.path.exists(storage_path)
+    path = tempfile.gettempdir()
+    config_path = os.path.join(path, 'config.json')
+    return os.path.exists(config_path)
+
+
+def get_config():
+    if not is_file():
+        cread_file_data()
+    config_path = os.path.join(tempfile.gettempdir(), 'config.json')
+    with open(config_path) as conf:
+        data = conf.read()
+        conf_dict = json.loads(data)
+    return conf_dict
 
 
 class User:
@@ -49,9 +58,9 @@ class User:
         conf = get_config()
         conf['login'] = login
         conf['password'] = password
-        with open('config.json', 'w') as w:
+        config_path = os.path.join(tempfile.gettempdir(), 'config.json')
+        with open(config_path, 'w') as w:
             json_dict = json.dumps(conf)
-            print(json_dict)
             w.write(json_dict)
 
 
@@ -111,7 +120,7 @@ class RequestServ:
         return status.json()
 
     def write_message(self, whom, message):
-        print(self.password, self.login)
+        print(self.login)
         data = {"password": self.password,
                 "message": message,
                 "whom": whom,
@@ -151,15 +160,11 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         super().__init__()
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setupUi(self)
-        # users = list()  # create list friends
-        # users.append('')
-        # users = users + RequestServ().get_friends()['friends']
-        # self.comboBox.addItems(users)
         self.add_users_in_list_widget()
         self.pushButton.clicked.connect(self.send_message)
         self.pushButton_2.clicked.connect(self.read_message)
         self.pushButton_3.clicked.connect(self.find_friends)
-        
+        self.login.setText(f"Login: {get_config()['login']}")
 
     def add_users_in_list_widget(self):
         users = RequestServ().get_friends()['friends']
@@ -170,18 +175,13 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         print('Нажатие на кнопку Send')
         text_message = self.writeMessage.toPlainText()
         friend = self.listWidget.currentItem().text()
-        # num_lst = self.comboBox.view().currentIndex().row()
-        # whom = self.comboBox.itemText(num_lst)
-
         status = RequestServ().write_message(friend, text_message)
         print(status)
         self.writeMessage.clear()
-        # self.viewMessage.append(status.content.decode())
 
     def read_message(self):
         print('Чтение сообщения')
         data = RequestServ().read_message()
-        print(type(data), data)
         if data['status']:   
             for mes in data['messages']:
                 print(f"{mes['user_name']}: {mes['message']}\ntime: {self.pars_time(mes['data'])}\n")
@@ -204,7 +204,7 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         if RequestServ().is_login(self.friend)['status']:
             self.textBrowser.setText(f'User {self.friend}, found! Add as Friend?')
             self.pushButton_4.clicked.connect(self.add_friend)
-            self.textBrowser.setText(f'User {self.friend}, added!')
+            
         else:
             self.textBrowser.setText(f'User {self.friend}, not found! Enter the correct login.')
 
@@ -212,8 +212,8 @@ class Chat(QtWidgets.QMainWindow, chat_v1.Ui_MainWindow):
         if not RequestServ().is_friend(self.friend)['status']:
             message = "Hi, I added you as a friend!"
             RequestServ().write_message(self.friend, message)
-            # self.comboBox.addItems([self.friend])
             self.listWidget.addItem(self.friend)
+            self.textBrowser.setText(f'User {self.friend}, added!')
 
 
 class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
@@ -242,6 +242,7 @@ class Login(QtWidgets.QMainWindow, login_in.Ui_Form):
         host = get_config()['host']
         url = host + '/api/v2/web_registration/'
         webbrowser.open_new(url)
+
 
 def widget_login():
     app = QtWidgets.QApplication(sys.argv)
