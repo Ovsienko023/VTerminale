@@ -29,7 +29,7 @@ class Ui_Form(object):
         self.LoginInPushButton.setGeometry(QtCore.QRect(150, 150, 75, 23))
         self.LoginInPushButton.setObjectName("LoginInPushButton")
         self.RegistrCommandLinkButton = QtWidgets.QCommandLinkButton(Form)
-        self.RegistrCommandLinkButton.setGeometry(QtCore.QRect(80, 250, 231, 41))
+        self.RegistrCommandLinkButton.setGeometry(QtCore.QRect(120, 250, 101, 41))
         self.RegistrCommandLinkButton.setObjectName("RegistrCommandLinkButton")
         self.label = QtWidgets.QLabel(Form)
         self.label.setGeometry(QtCore.QRect(60, 80, 31, 16))
@@ -45,7 +45,7 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Login IN"))
         self.LoginInPushButton.setText(_translate("Form", "login in"))
-        self.RegistrCommandLinkButton.setText(_translate("Form", "Forgot your password?"))
+        self.RegistrCommandLinkButton.setText(_translate("Form", "Check in"))
         self.label.setText(_translate("Form", "Login:"))
         self.label_2.setText(_translate("Form", "Password:"))
 

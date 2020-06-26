@@ -76,14 +76,14 @@
   <widget class="QCommandLinkButton" name="RegistrCommandLinkButton">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>120</x>
      <y>250</y>
-     <width>231</width>
+     <width>101</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Forgot your password?</string>
+    <string>Check in</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
