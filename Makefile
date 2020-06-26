@@ -6,5 +6,3 @@ test :
 
 run :
 	python3 Application-api/main.py
-
-all: build test run

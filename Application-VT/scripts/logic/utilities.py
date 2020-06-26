@@ -234,12 +234,12 @@ def use_admin_command():
 
 # CommandDB().create_new_user('kop', '123')
 
-CommandDB().dell_user('5ef09b83a9ffc54e736ff20d')
-CommandDB().dell_user('5eec63f6673f3fd3a82b11fb')
+# CommandDB().dell_user('5ef09b83a9ffc54e736ff20d')
+# CommandDB().dell_user('5eec63f6673f3fd3a82b11fb')
 
 
 
-CommandDB().get_all_users()
+# CommandDB().get_all_users()
 
 # CommandDB().dell_user('5ec28010414dbc790d0c34e8')
 # CommandDB().dell_user('5ec2863ecf361818e6236525')
