@@ -35,7 +35,7 @@ Api консольного чата для обмена сообщениями �
 
   Сборка файла Vterminale.exe осуществляется с помощью библиотеки pyinstaller, командой: ` pyinstaller .\net_client.py --onefile --noconsole` обзор приложения:
 
-  ![] https://github.com/Ovsienko023/VTerminale/blob/master/Application-VT/client/QT_GUI/Screen/authentication.png
+  ![Text](https://github.com/Ovsienko023/VTerminale/blob/master/Application-VT/client/QT_GUI/Screen/authentication.png)
   
 * Реализация в терминале(консоле): 
   
