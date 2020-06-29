@@ -109,7 +109,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -124,8 +124,8 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Send"))
         self.label.setText(_translate("MainWindow", "Enter Message:"))
         self.label_2.setText(_translate("MainWindow", "Friends:"))
-        self.pushButton_2.setText(_translate("MainWindow", "Check Message"))
-        self.label_5.setText(_translate("MainWindow", "You message:"))
+        self.pushButton_2.setText(_translate("MainWindow", "Check messages"))
+        self.label_5.setText(_translate("MainWindow", "Your messages:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Tab_1), _translate("MainWindow", "Send message"))
         self.pushButton_3.setText(_translate("MainWindow", "Find"))
         self.textBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"

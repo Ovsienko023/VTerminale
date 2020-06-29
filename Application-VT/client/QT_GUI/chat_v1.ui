@@ -30,7 +30,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -211,7 +211,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Check Message</string>
+         <string>Check messages</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_5">
@@ -224,7 +224,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>You message:</string>
+         <string>Your messages:</string>
         </property>
        </widget>
       </widget>

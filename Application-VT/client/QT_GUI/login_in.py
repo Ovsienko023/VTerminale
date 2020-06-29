@@ -45,7 +45,7 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Login IN"))
         self.LoginInPushButton.setText(_translate("Form", "login in"))
-        self.RegistrCommandLinkButton.setText(_translate("Form", "Check in"))
+        self.RegistrCommandLinkButton.setText(_translate("Form", "Sign up"))
         self.label.setText(_translate("Form", "Login:"))
         self.label_2.setText(_translate("Form", "Password:"))
 
