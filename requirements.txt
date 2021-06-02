@@ -13,6 +13,6 @@ pymongo==3.10.1
 pynsist==2.5
 requests==2.23.0
 requests-download==0.1.2
-urllib3==1.25.9
+urllib3==1.26.5
 Werkzeug==1.0.1
 yarg==0.1.9
